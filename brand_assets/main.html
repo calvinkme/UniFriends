@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Academic Pulse - Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#cc9e82", // Terracotta
+              "on-primary": "#ffffff",
+              "secondary": "#8c7e6d", // Soft Earth Tone
+              "on-secondary": "#ffffff",
+              "tertiary": "#a69080",
+              "background": "#fdfaf6", // Warm off-white/cream
+              "surface": "#fdfaf6",
+              "surface-container": "#f4efe8", // Creamer/warmer container
+              "surface-container-low": "#f9f6f1",
+              "surface-container-high": "#ede4d9",
+              "on-surface": "#4a423d",
+              "on-surface-variant": "#7a7067",
+              "outline": "#dccfc2",
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { 
+            font-family: 'Manrope', sans-serif;
+            background-color: #fdfaf6;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fdfaf6]/80 backdrop-blur-md border-b border-outline/30">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-xl mx-auto">
+<div class="text-xl font-extrabold text-primary tracking-tight">
+            Academic Pulse
+        </div>
+<div class="w-9 h-9 rounded-full overflow-hidden border border-outline">
+<img alt="Student avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC5KtZAmknQC9Jzdh8RgtbF5hCGcmoXwnMPTeZDUGWjayjSB7VEVZdLo0pDASu8oL1nImwF-IZU3nmy1XiNhXZxgDsmA7PRO1Wo7BAd42NbnNjfMSbJadH2jg2ngkKntUYIAGOyqWs3y8UScLquzoD8CKa_MjDTixCWqyKI9RPhJo_MwRBlDV40AURo7hRxKAHy7GLBNzL9kK-U9sdYRCowDxaC4vxTBhBhAgWjQom7KEgxcCcK8yT_R3CBhGIAxnToj0VBa48G3uR"/>
+</div>
+</div>
+</header>
+<main class="pt-20 px-6 max-w-xl mx-auto space-y-6">
+<!-- Hero Profile Section -->
+<section class="relative">
+<div class="bg-surface-container p-6 rounded-xl border border-outline/40">
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="relative">
+<div class="w-28 h-28 rounded-full p-0.5 bg-primary/30">
+<img alt="Alex Thompson" class="w-full h-full object-cover rounded-full border-2 border-surface shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYcnj-041Aq_3dXF2UNfT58kwtu9eNngvlQpOfiH2R1GSiVUcW2V-Xp3w0lUf_MsrqwxzUI6n0YeXPW6uaEzx-yPGgvfIadh7jlWPRXlEqLjLGRIrc3TsfzgBcVa7vNxB-d8y67_aD8kwAt4hPOPYnjhh-GWdcGF7uE79FPj5bexkw2xAVgoZWANmuMzJ05NMV2-TnTBBYP6FOwOIGhcwJCLGQJ9fFSLfSv8HL1HelYO9GKfShD91L8Kn0Drm5xEfI_PAISr0B1T1j"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary p-1.5 rounded-full shadow-md">
+<span class="material-symbols-outlined text-white text-[14px] leading-none">verified</span>
+</div>
+</div>
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-on-surface">Alex Thompson</h1>
+<p class="text-on-surface-variant font-medium text-sm">B.Sc Computer Science</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Bento Row -->
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-low border border-outline/20 p-4 rounded-lg flex flex-col items-center text-center">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1">Academic Year</span>
+<span class="text-primary font-extrabold text-lg">Year 3</span>
+</div>
+<div class="bg-surface-container-low border border-outline/20 p-4 rounded-lg flex flex-col items-center text-center">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1">GPA Ranking</span>
+<span class="text-secondary font-extrabold text-lg">Top 5%</span>
+</div>
+</div>
+<!-- Academic Units -->
+<section class="space-y-3">
+<h2 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant px-1">Active Courses</h2>
+<div class="flex flex-wrap gap-2">
+<div class="px-3 py-1.5 bg-surface-container-high text-on-surface rounded-md text-xs font-semibold border border-outline/30">Machine Learning</div>
+<div class="px-3 py-1.5 bg-surface-container-high text-on-surface rounded-md text-xs font-semibold border border-outline/30">Advanced Algorithms</div>
+<div class="px-3 py-1.5 bg-surface-container-high text-on-surface rounded-md text-xs font-semibold border border-outline/30">UX Design Principles</div>
+<div class="px-3 py-1.5 bg-surface-container-high text-on-surface rounded-md text-xs font-semibold border border-outline/30">Data Ethics</div>
+</div>
+</section>
+<!-- Bio & Interests -->
+<section class="bg-surface-container-low border border-outline/20 p-6 rounded-lg space-y-5">
+<div class="space-y-2">
+<h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+                About Me
+            </h2>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                Passionate about the intersection of AI and human-centered design. When I'm not coding, you'll likely find me in the campus coffee shop or organizing weekend hackathons. Looking to collaborate on some innovative side projects!
+            </p>
+</div>
+<div class="space-y-3">
+<h3 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Interests</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[11px] font-bold border border-primary/20">Hackathons</span>
+<span class="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[11px] font-bold border border-primary/20">Coffee Roasting</span>
+<span class="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[11px] font-bold border border-primary/20">Jazz Piano</span>
+<span class="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[11px] font-bold border border-primary/20">Rock Climbing</span>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex flex-col gap-3 pb-8">
+<button class="w-full h-12 rounded-lg bg-primary text-on-primary font-bold text-sm shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+            Edit Profile
+        </button>
+<button class="w-full h-12 rounded-lg bg-surface-container-high text-on-surface-variant font-bold text-sm border border-outline/40 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+            Settings
+        </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-[#fdfaf6]/90 backdrop-blur-lg border-t border-outline/30">
+<div class="flex justify-around items-center h-16 px-4 w-full max-w-xl mx-auto">
+<!-- Discovery -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 transition-colors px-2 py-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+<span class="text-[10px] font-bold mt-0.5">Discovery</span>
+</div>
+<!-- Connections (Modified) -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 transition-colors px-2 py-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[10px] font-bold mt-0.5">Connections</span>
+</div>
+<!-- Messages -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 transition-colors px-2 py-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-[10px] font-bold mt-0.5">Messages</span>
+</div>
+<!-- Profile (ACTIVE) -->
+<div class="flex flex-col items-center justify-center text-primary px-2 py-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-bold mt-0.5">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,178 @@
+import { View, Text, Pressable, Alert, ActivityIndicator } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Mail } from "lucide-react-native";
+import { Image } from "expo-image";
+import { Colors } from "@/constants";
+import { signInWithGoogle, signInWithFacebook } from "@/services/auth";
+import { useAuthStore } from "@/stores";
+
+export default function LoginScreen() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { initialize } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOAuth = async (provider: "google" | "facebook") => {
+    setIsLoading(true);
+    try {
+      if (provider === "google") {
+        await signInWithGoogle();
+      } else {
+        await signInWithFacebook();
+      }
+      // Re-initialize to pick up the new session
+      await initialize();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Please try again.";
+      Alert.alert("Login Failed", message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <View
+      className="flex-1 bg-background px-8"
+      style={{ paddingTop: insets.top, paddingBottom: insets.bottom + 24 }}
+    >
+      {/* Top spacer + branding */}
+      <View className="flex-1 items-center justify-center">
+        <View
+          className="w-24 h-24 rounded-3xl items-center justify-center mb-6"
+          style={{ backgroundColor: Colors.primary.container }}
+        >
+          <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 36, color: Colors.onPrimary.container }}>
+            UF
+          </Text>
+        </View>
+        <Text
+          style={{
+            fontFamily: "Manrope_800ExtraBold",
+            fontSize: 32,
+            letterSpacing: -0.5,
+            color: Colors.onSurface.DEFAULT,
+          }}
+        >
+          UniFriends
+        </Text>
+        <Text
+          style={{
+            fontFamily: "WorkSans_400Regular",
+            fontSize: 16,
+            color: Colors.onSurface.variant,
+            marginTop: 8,
+            textAlign: "center",
+            lineHeight: 24,
+          }}
+        >
+          Find your university crew
+        </Text>
+      </View>
+
+      {/* Auth buttons */}
+      <View className="gap-3 mb-4">
+        {isLoading && (
+          <ActivityIndicator
+            size="small"
+            color={Colors.primary.DEFAULT}
+            style={{ marginBottom: 8 }}
+          />
+        )}
+
+        <Pressable
+          onPress={() => handleOAuth("google")}
+          disabled={isLoading}
+          className="h-14 rounded-xl flex-row items-center justify-center gap-3 bg-surface-container-lowest active:scale-[0.98]"
+          style={{
+            borderWidth: 1,
+            borderColor: Colors.outline.variant + "66",
+            opacity: isLoading ? 0.5 : 1,
+          }}
+        >
+          <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20 }}>G</Text>
+          <Text
+            style={{
+              fontFamily: "WorkSans_600SemiBold",
+              fontSize: 15,
+              color: Colors.onSurface.DEFAULT,
+            }}
+          >
+            Continue with Google
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => handleOAuth("facebook")}
+          disabled={isLoading}
+          className="h-14 rounded-xl flex-row items-center justify-center gap-3 bg-surface-container-lowest active:scale-[0.98]"
+          style={{
+            borderWidth: 1,
+            borderColor: Colors.outline.variant + "66",
+            opacity: isLoading ? 0.5 : 1,
+          }}
+        >
+          <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: "#1877F2" }}>f</Text>
+          <Text
+            style={{
+              fontFamily: "WorkSans_600SemiBold",
+              fontSize: 15,
+              color: Colors.onSurface.DEFAULT,
+            }}
+          >
+            Continue with Facebook
+          </Text>
+        </Pressable>
+
+        {/* Divider */}
+        <View className="flex-row items-center gap-4 my-2">
+          <View className="flex-1 h-px bg-outline-variant/30" />
+          <Text
+            style={{
+              fontFamily: "WorkSans_500Medium",
+              fontSize: 12,
+              color: Colors.onSurface.variant,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+            }}
+          >
+            or
+          </Text>
+          <View className="flex-1 h-px bg-outline-variant/30" />
+        </View>
+
+        <Pressable
+          onPress={() => router.push("/(auth)/email")}
+          disabled={isLoading}
+          className="h-14 rounded-xl flex-row items-center justify-center gap-3 bg-primary active:scale-[0.98]"
+          style={{ opacity: isLoading ? 0.5 : 1 }}
+        >
+          <Mail size={18} color={Colors.onPrimary.DEFAULT} />
+          <Text
+            style={{
+              fontFamily: "WorkSans_600SemiBold",
+              fontSize: 15,
+              color: Colors.onPrimary.DEFAULT,
+            }}
+          >
+            Continue with Email
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* Footer */}
+      <Text
+        style={{
+          fontFamily: "WorkSans_400Regular",
+          fontSize: 12,
+          color: Colors.onSurface.variant + "99",
+          textAlign: "center",
+          lineHeight: 18,
+        }}
+      >
+        By continuing, you agree to our Terms of Service and Privacy Policy
+      </Text>
+    </View>
+  );
+}

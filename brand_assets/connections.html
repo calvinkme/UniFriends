@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "terracotta": "#cc9e82",
+              "sage": "#9db4a0",
+              "sage-light": "#e8ece9",
+              "sage-dark": "#7a8f7d",
+              "background": "#fdfaf7", // Warm off-white/cream
+              "surface": "#ffffff",
+              "on-surface": "#2c2826",
+              "on-surface-variant": "#6e645e",
+              "primary": "#cc9e82",
+              "secondary": "#9db4a0",
+              "outline": "#e0d6cf"
+            },
+            fontFamily: {
+              "manrope": ["Manrope", "sans-serif"],
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "1rem",
+              "xl": "1.5rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline/50">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-xl mx-auto">
+<h1 class="font-manrope text-2xl font-extrabold tracking-tight text-on-surface">Connections</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-sage-light text-sage-dark hover:bg-sage/20 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 w-full max-w-xl mx-auto">
+<!-- New Friends Section -->
+<section class="mb-10">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-on-surface font-bold text-lg tracking-tight">Recent Connections</h2>
+<button class="text-terracotta text-sm font-bold hover:underline">See all</button>
+</div>
+<div class="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
+<!-- New Friend Item -->
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="relative p-0.5 rounded-full border-2 border-terracotta">
+<img alt="" class="w-16 h-16 rounded-full border-2 border-background object-cover" data-alt="portrait of a smiling young college student with curly hair wearing a denim jacket" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7q4oIuVxa3Wo2LmKLG1WsWMhUF25P1cMQnjTwmRMZtq4MconKEL5OtEmo23iFGvXi430H46ubEb4uqaYoqJBO4e9otUVkyu6lI4W1-uwexKaXtXPf8t7IqWdYzHbQxPqWPxfjYpAhQAvsnr4HwLMfJTW2zrc3GJIRbnWK-una-YG7DZ2zWxaY3sSntOxTeGPXR_3_biRGjg811shkjCYFVbaU_GdaxnYfXBI-UjNWXheYzM9a57r2iB16XCjfADVNirwGtIA4aXSf"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-sage border-2 border-background rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Liam</span>
+</div>
+<!-- New Friend Item -->
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="relative p-0.5 rounded-full border-2 border-terracotta">
+<img alt="" class="w-16 h-16 rounded-full border-2 border-background object-cover" data-alt="headshot of a cheerful female university student with long dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwhrLGgo3khzg7XiLWlRq419LOnh5e06dCeMuMZ8ROdlF5PwLLAr5c9VN3s-T0DME1RgbCkrvAHruTNmsEv92AbUAW2LVTZi7yOstxw0bDXK0JCmydWmOdqC-q2cRoZJXi6gcRcFbhiiYkXKE-RPNJiFKFBHKPR9jodf4ePB72aGWdtr3dPrXCI-H4nrTE2zxKUSiMQepQJo7XRtAWv_A_Rcbl780gx4pjvyGODcb2mRq82uxNhoqRJOnRZ92p3m3cyqvkys3ulAeO"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-sage border-2 border-background rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Maya</span>
+</div>
+<!-- New Friend Item -->
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="relative p-0.5 rounded-full border-2 border-outline">
+<img alt="" class="w-16 h-16 rounded-full border-2 border-background object-cover" data-alt="young man with glasses looking directly at camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjKtRNrWDM-LCBGSahkhwwNiiUhnrqBRgqXsngTzwG4r485eR_J9cOsyG8BvToxhK4opyk9jMzFZ7JQWbE7wDfGsX1WlvbCIhWtcnTwSpe1Xs2yH0Fkku0k8_i_IQS7kZi__G9GXtQVVQTLEP6qUhwC4votX0tYFV60T90iAY2fhFwwdXqPZkZDb2KXrReSK7oeUKGdMP6TJd6_L3QPYLZasnp9kPm5EfSbCw7FFfauSd3m3keL0r2O4GN_xv-l9iboZ3haDfRDUMa"/>
+</div>
+<span class="text-xs font-bold text-on-surface">Ethan</span>
+</div>
+<!-- New Friend Item -->
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="relative p-0.5 rounded-full border-2 border-outline">
+<img alt="" class="w-16 h-16 rounded-full border-2 border-background object-cover" data-alt="stylish young woman with bob haircut" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn-TNsnQx_43-SNKKBx5wh2pKh3ui6Bux3UTx550OuQ1ev-9C7uXfqsFf8Udm-7DdTNGZarvx_Oal3zYI9GGKE1Nf4dEp_Jvf_PePamV8gtx3fxCIuVhZRw07xBkM5aXqrpC4wDDWTVi82nlCBiobEgOjuv3kxzMFj6fRLW4dqRoFa9mNuNRYa8RnMoEyPLEjBXQrKnNrqAb9HlMGVQZDBo2m44RLhyZ4hzIKonuTzN9KnWdWu03vOX44LbVkqA118X4AOuGxBXMwu"/>
+</div>
+<span class="text-xs font-bold text-on-surface">Sophie</span>
+</div>
+</div>
+</section>
+<!-- All Connections Section -->
+<section>
+<h2 class="text-on-surface font-bold text-lg tracking-tight mb-5">Members</h2>
+<div class="space-y-3">
+<!-- Connection Card -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface border border-outline/30 shadow-sm transition-transform active:scale-[0.98]">
+<img alt="" class="w-12 h-12 rounded-lg object-cover" data-alt="young male student" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP-Dx7ZCn3lBnAEyiNAJ_L2O7_ZxNE7N-qk7oTewBtepO2jxx4YtOrCnFXa2RFgyQKPf-WQeBzXSUOvpgmOfF86dVc6IDcK08vtz5kJQWcE5hT4AYVkLO1XDgs3oPOT1ZijQs3emaw9A6VnO68YC2AOo-ICMgcLe0KhbYI6s8mfEeZeHt1CtVn3sPQCInHwDCkqve6VtaHVPEuvzzGWkQUm5HsjCTn1PLICrCoMWGkl7sT4KF5-pcQsqS6gfDcGIOxYAmmyrWXGnvO"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-0.5">
+<h3 class="font-bold text-on-surface truncate">Liam Henderson</h3>
+<span class="px-2 py-0.5 rounded bg-sage-light text-sage-dark text-[10px] font-extrabold uppercase tracking-wider">Architecture</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate">Hey! Do you have the notes from the lecture?</p>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant/60 font-bold block mb-1">2m ago</span>
+<div class="w-1.5 h-1.5 rounded-full bg-terracotta ml-auto"></div>
+</div>
+</div>
+<!-- Connection Card -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface border border-outline/30 shadow-sm transition-transform active:scale-[0.98]">
+<img alt="" class="w-12 h-12 rounded-lg object-cover" data-alt="female student" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrcKIqoxNF1BhzGw1-H0gR7F2l__gk4RtMvxTSpnd50b-gfdl_GkbzEyzSlhpiZwmqt9lu4UrjYpv5DJDk_MxVNk5vOzIj6u3MAg33BGk2gKDEXXK2hhM4kF_fvGOxwUqLnkDfc4v-HkTyHrzbN88jXfNvOFTKxa5n9KRvi76bJHtBtzc1q9p28VcLUgYeqQJqCWSXOCERh7QVNY-vngVzUkhFA4zV2q8q_RCTEd5LeWgD97cG2d1XXPVYGtcnUCTXg2GQzUTfXOcp"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-0.5">
+<h3 class="font-bold text-on-surface truncate">Maya Jenkins</h3>
+<span class="px-2 py-0.5 rounded bg-sage-light text-sage-dark text-[10px] font-extrabold uppercase tracking-wider">Medicine</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate">That coffee place was actually so good!</p>
+</div>
+<div class="text-right text-on-surface-variant/60">
+<span class="text-[10px] font-bold">15m</span>
+</div>
+</div>
+<!-- Connection Card -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface border border-outline/30 shadow-sm transition-transform active:scale-[0.98]">
+<img alt="" class="w-12 h-12 rounded-lg object-cover" data-alt="man with spectacles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDijQC3RLP3qPhdxynHjxk9-BLSYNvgP80nLAKg8i-G8rvrF4WA7e1-3b8rwnvSwAWUyDXo3V346JTDCkC8HtscelzwFEeoC-Qm402YCkgBAKhAdBodAquYGmBf1dwkgnX2NEGKRF8xrgSIyalbzj_O-R0dBaGNcDg4sksixXDx8meHchTKrmxR-28uTqojvvt1d_DhjbtKQu9DNINvpmZs_xTGYcNyAK77RgUE9Z-yFgYHC4JJUjKXHmpiWgrhekg3Jt7RsgdHt6tT"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-0.5">
+<h3 class="font-bold text-on-surface truncate">Ethan Wright</h3>
+<span class="px-2 py-0.5 rounded bg-sage-light text-sage-dark text-[10px] font-extrabold uppercase tracking-wider">Physics</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate">Are you going to the study group tonight?</p>
+</div>
+<div class="text-right text-on-surface-variant/60">
+<span class="text-[10px] font-bold">1h</span>
+</div>
+</div>
+<!-- Connection Card -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface border border-outline/30 shadow-sm transition-transform active:scale-[0.98]">
+<img alt="" class="w-12 h-12 rounded-lg object-cover" data-alt="young woman with stylish glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYejVHLdkMZvfZ0AHZrLdzHGlluyp_92f3Oqs3ai0IyGH_9TPyw79Aa4lz0f66tisiMLQGpxDD2ntS0LaH60WV-X3azVPoO8S3sEKNXHsIFLVjVfYn1h-UEv-2f0kVzZDdUs1Zswp-x987jsXkdHk4OL1p6oZWneGS5ajkfLa0x-kQ67mZAn9wdCkzrdIGL0ys8LTeocSAOSvewiKLSGWsOh7DGG-UJXxDUhArCD7T6y89aR8ec1vQBgASoCLsN5poefUtkqmx3kkP"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-0.5">
+<h3 class="font-bold text-on-surface truncate">Sophie Chen</h3>
+<span class="px-2 py-0.5 rounded bg-sage-light text-sage-dark text-[10px] font-extrabold uppercase tracking-wider">Design</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate">The portfolio feedback was super helpful.</p>
+</div>
+<div class="text-right text-on-surface-variant/60">
+<span class="text-[10px] font-bold">3h</span>
+</div>
+</div>
+<!-- Connection Card -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface border border-outline/30 shadow-sm transition-transform active:scale-[0.98]">
+<div class="w-12 h-12 rounded-lg bg-terracotta/10 flex items-center justify-center text-terracotta font-bold">JB</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-0.5">
+<h3 class="font-bold text-on-surface truncate">James Bennett</h3>
+<span class="px-2 py-0.5 rounded bg-sage-light text-sage-dark text-[10px] font-extrabold uppercase tracking-wider">Law</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate">You: Sounds like a plan!</p>
+</div>
+<div class="text-right text-on-surface-variant/60">
+<span class="text-[10px] font-bold">Yesterday</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-background/95 backdrop-blur-lg border-t border-outline/50">
+<div class="flex justify-around items-center h-20 px-4 pb-2 w-full max-w-xl mx-auto">
+<!-- Discovery Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/50 hover:text-terracotta transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Explore</span>
+</a>
+<!-- Connections Tab (Active) -->
+<a class="flex flex-col items-center justify-center text-terracotta px-4 py-1" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Connections</span>
+</a>
+<!-- Messages Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/50 hover:text-terracotta transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined mb-1">chat</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Chat</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/50 hover:text-terracotta transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined mb-1">person_outline</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Account</span>
+</a>
+</div>
+</nav>
+</body></html>
