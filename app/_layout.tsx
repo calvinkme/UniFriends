@@ -81,30 +81,26 @@ export default function RootLayout() {
       }
     });
 
-    // Listen for incoming notifications while app is open
-    notificationListener.current = addNotificationReceivedListener(
-      (_notification: Notification) => {
-        // Notification received in foreground — the handler config
-        // in notifications.ts controls whether it shows an alert
-      },
-    );
+    addNotificationReceivedListener(
+      (_notification: Notification) => {},
+    ).then((sub) => {
+      notificationListener.current = sub as EventSubscription;
+    });
 
-    // Listen for user tapping on a notification
-    responseListener.current = addNotificationResponseReceivedListener(
+    addNotificationResponseReceivedListener(
       (response: NotificationResponse) => {
         const data = response.notification.request.content.data;
 
         if (data?.type === "message" && data.conversationId) {
-          // Navigate to the chat screen
-          // Extract userId from conversationId (format: "convo-{userId}")
           const userId = (data.conversationId as string).replace("convo-", "");
           router.push(`/chat/${userId}`);
         } else if (data?.type === "connection_request" || data?.type === "match") {
-          // Navigate to connections tab
           router.push("/(tabs)/connections");
         }
       },
-    );
+    ).then((sub) => {
+      responseListener.current = sub as EventSubscription;
+    });
 
     return () => {
       notificationListener.current?.remove();

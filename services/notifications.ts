@@ -1,57 +1,49 @@
-import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
 
-// Configure how notifications appear when the app is in the foreground
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+const isExpoGo = Constants.appOwnership === "expo";
 
-/**
- * Register for push notifications and return the Expo push token.
- * Returns null if running on a simulator or permissions are denied.
- */
+async function getNotifications() {
+  const Notifications = await import("expo-notifications");
+  return Notifications;
+}
+
+// Set up notification handler (only outside Expo Go)
+if (!isExpoGo) {
+  getNotifications()
+    .then((Notifications) => {
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+          shouldShowBanner: true,
+          shouldShowList: true,
+        }),
+      });
+    })
+    .catch(() => {
+      console.log("Notifications not available in this environment");
+    });
+}
+
 export async function registerForPushNotifications(): Promise<string | null> {
-  // Push notifications only work on physical devices
-  if (!Device.isDevice) {
-    console.log("Push notifications require a physical device");
-    return null;
-  }
+  if (isExpoGo) return null;
+  if (!Device.isDevice) return null;
 
-  const isExpoGoAndroid =
-    Platform.OS === "android" &&
-    Constants.appOwnership === "expo";
+  const Notifications = await getNotifications();
 
-  if (isExpoGoAndroid) {
-    console.log(
-      "Remote push notifications are not available in Expo Go on Android. Use a development build to test push tokens.",
-    );
-    return null;
-  }
-
-  // Check existing permissions
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
 
-  // Request permission if not already granted
   if (existingStatus !== "granted") {
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
   }
 
-  if (finalStatus !== "granted") {
-    console.log("Push notification permission denied");
-    return null;
-  }
+  if (finalStatus !== "granted") return null;
 
-  // Android requires a notification channel
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
       name: "Default",
@@ -78,31 +70,23 @@ export async function registerForPushNotifications(): Promise<string | null> {
     });
   }
 
-  // Get the Expo push token
   const projectId =
     Constants.expoConfig?.extra?.eas?.projectId ??
     Constants.easConfig?.projectId;
 
-  if (!projectId) {
-    console.log("Missing EAS project ID for Expo push token registration");
-    return null;
-  }
+  if (!projectId) return null;
 
-  const tokenData = await Notifications.getExpoPushTokenAsync({
-    projectId,
-  });
-
+  const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
   return tokenData.data;
 }
 
-/**
- * Schedule a local notification for an incoming message.
- */
 export async function notifyNewMessage(
   senderName: string,
   messageText: string,
   conversationId: string,
 ) {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: senderName,
@@ -111,17 +95,16 @@ export async function notifyNewMessage(
       sound: "default",
       ...(Platform.OS === "android" ? { channelId: "messages" } : {}),
     },
-    trigger: null, // Show immediately
+    trigger: null,
   });
 }
 
-/**
- * Schedule a local notification for a new connection request.
- */
 export async function notifyConnectionRequest(
   requesterName: string,
   userId: string,
 ) {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "New Connection Request",
@@ -134,10 +117,9 @@ export async function notifyConnectionRequest(
   });
 }
 
-/**
- * Schedule a local notification for a mutual match.
- */
 export async function notifyMutualMatch(matchName: string, userId: string) {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "It's a Match!",
@@ -150,14 +132,13 @@ export async function notifyMutualMatch(matchName: string, userId: string) {
   });
 }
 
-/**
- * Schedule a local notification for group activity.
- */
 export async function notifyGroupActivity(
   groupName: string,
   activityText: string,
   groupId: string,
 ) {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: groupName,
@@ -169,31 +150,41 @@ export async function notifyGroupActivity(
   });
 }
 
-/**
- * Get the count of pending notifications (badge number).
- */
 export async function getBadgeCount(): Promise<number> {
+  if (isExpoGo) return 0;
+  const Notifications = await getNotifications();
   return Notifications.getBadgeCountAsync();
 }
 
-/**
- * Set the badge count.
- */
 export async function setBadgeCount(count: number) {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.setBadgeCountAsync(count);
 }
 
-/**
- * Clear all delivered notifications.
- */
 export async function clearAllNotifications() {
+  if (isExpoGo) return;
+  const Notifications = await getNotifications();
   await Notifications.dismissAllNotificationsAsync();
 }
 
-// Re-export types and subscription helpers for use in components
-export {
-  addNotificationReceivedListener,
-  addNotificationResponseReceivedListener,
-} from "expo-notifications";
+// Re-export types (these are type-only and don't trigger side effects)
 export type { Notification, NotificationResponse } from "expo-notifications";
 export type { EventSubscription } from "expo-modules-core";
+
+// Lazy listener helpers
+export async function addNotificationReceivedListener(
+  ...args: Parameters<typeof import("expo-notifications").addNotificationReceivedListener>
+) {
+  if (isExpoGo) return { remove: () => {} };
+  const Notifications = await getNotifications();
+  return Notifications.addNotificationReceivedListener(...args);
+}
+
+export async function addNotificationResponseReceivedListener(
+  ...args: Parameters<typeof import("expo-notifications").addNotificationResponseReceivedListener>
+) {
+  if (isExpoGo) return { remove: () => {} };
+  const Notifications = await getNotifications();
+  return Notifications.addNotificationResponseReceivedListener(...args);
+}
