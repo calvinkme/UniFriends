@@ -7,8 +7,9 @@ import { FlashList } from "@shopify/flash-list";
 import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
+import { ConnectionModal } from "@/components/ConnectionModal";
 import { useConnectionStore } from "@/stores";
-import type { Connection } from "@/types";
+import type { Connection, UserProfile } from "@/types";
 
 function ConnectionCard({
   connection,
@@ -91,6 +92,12 @@ export default function ConnectionsScreen() {
   const router = useRouter();
   const { connections, groups, loadConnections, acceptIncomingConnection, declineIncomingConnection } = useConnectionStore();
   const [activeTab, setActiveTab] = useState<"people" | "groups">("people");
+  const [matchedUser, setMatchedUser] = useState<UserProfile | null>(null);
+
+  const handleAccept = (connection: Connection) => {
+    acceptIncomingConnection(connection.user.id);
+    setMatchedUser(connection.user);
+  };
 
   useEffect(() => {
     loadConnections();
@@ -215,7 +222,7 @@ export default function ConnectionsScreen() {
                       footer={
                         <View style={{ flexDirection: "row", gap: 10 }}>
                           <Pressable
-                            onPress={() => acceptIncomingConnection(conn.user.id)}
+                            onPress={() => handleAccept(conn)}
                             style={{
                               flexDirection: "row",
                               alignItems: "center",
@@ -343,6 +350,19 @@ export default function ConnectionsScreen() {
           )}
           <View style={{ height: 100 }} />
         </ScrollView>
+      )}
+
+      {matchedUser && (
+        <ConnectionModal
+          visible={!!matchedUser}
+          user={matchedUser}
+          onChat={() => {
+            const userId = matchedUser.id;
+            setMatchedUser(null);
+            router.push(`/chat/${userId}`);
+          }}
+          onClose={() => setMatchedUser(null)}
+        />
       )}
     </View>
   );

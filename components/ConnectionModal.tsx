@@ -1,88 +1,121 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Modal } from "react-native";
 import { Star } from "lucide-react-native";
 import { Colors } from "@/constants";
+import { Avatar } from "@/components/ui/Avatar";
 import type { UserProfile } from "@/types";
 
 type ConnectionModalProps = {
+  visible: boolean;
   user: UserProfile;
-  onDismiss: () => void;
+  onChat: () => void;
+  onClose: () => void;
 };
 
-export function ConnectionModal({ user, onDismiss }: ConnectionModalProps) {
+export function ConnectionModal({ visible, user, onChat, onClose }: ConnectionModalProps) {
   return (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 50,
-        backgroundColor: "rgba(0,0,0,0.5)",
-      }}
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View
         style={{
-          backgroundColor: Colors.surface.DEFAULT,
-          borderRadius: 16,
-          padding: 32,
-          marginHorizontal: 32,
+          flex: 1,
           alignItems: "center",
-          maxWidth: 320,
+          justifyContent: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
+            backgroundColor: Colors.surface.DEFAULT,
+            borderRadius: 24,
+            padding: 32,
+            marginHorizontal: 32,
             alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 24,
-            backgroundColor: Colors.secondary.container,
+            width: 320,
           }}
         >
-          <Star size={36} color={Colors.secondary.DEFAULT} fill={Colors.secondary.DEFAULT} />
-        </View>
-        <Text
-          style={{
-            fontFamily: "Manrope_800ExtraBold",
-            fontSize: 22,
-            color: Colors.onSurface.DEFAULT,
-            textAlign: "center",
-            marginBottom: 8,
-          }}
-        >
-          New Connection Found!
-        </Text>
-        <Text
-          style={{
-            fontFamily: "WorkSans_400Regular",
-            fontSize: 15,
-            lineHeight: 22,
-            color: Colors.onSurface.variant,
-            textAlign: "center",
-            marginBottom: 32,
-          }}
-        >
-          You and {user.firstName} are now connected. Start a conversation!
-        </Text>
-        <Pressable
-          onPress={onDismiss}
-          style={{
-            backgroundColor: Colors.primary.DEFAULT,
-            paddingHorizontal: 32,
-            paddingVertical: 12,
-            borderRadius: 12,
-          }}
-        >
-          <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 15, color: Colors.onPrimary.DEFAULT }}>
-            Continue
+          <View
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 8,
+              backgroundColor: Colors.secondary.container,
+            }}
+          >
+            <Avatar
+              uri={user.avatarUrl}
+              name={`${user.firstName} ${user.lastName}`}
+              size="lg"
+            />
+          </View>
+          <View
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: Colors.primary.container,
+              marginTop: -24,
+              marginBottom: 16,
+            }}
+          >
+            <Star size={16} color={Colors.primary.DEFAULT} fill={Colors.primary.DEFAULT} />
+          </View>
+          <Text
+            style={{
+              fontFamily: "Manrope_800ExtraBold",
+              fontSize: 22,
+              color: Colors.onSurface.DEFAULT,
+              textAlign: "center",
+              marginBottom: 8,
+            }}
+          >
+            You're Connected!
           </Text>
-        </Pressable>
+          <Text
+            style={{
+              fontFamily: "WorkSans_400Regular",
+              fontSize: 15,
+              lineHeight: 22,
+              color: Colors.onSurface.variant,
+              textAlign: "center",
+              marginBottom: 28,
+            }}
+          >
+            You and {user.firstName} are now friends. Say hello!
+          </Text>
+          <View style={{ width: "100%", gap: 10 }}>
+            <Pressable
+              onPress={onChat}
+              style={{
+                backgroundColor: Colors.primary.DEFAULT,
+                paddingVertical: 14,
+                borderRadius: 14,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 15, color: Colors.onPrimary.DEFAULT }}>
+                Send a Message
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={onClose}
+              style={{
+                backgroundColor: Colors.surface.containerHigh,
+                paddingVertical: 14,
+                borderRadius: 14,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 15, color: Colors.onSurface.variant }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 }
