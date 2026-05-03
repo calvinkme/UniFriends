@@ -174,7 +174,7 @@ export default function SettingsScreen() {
           <SettingsLink
             icon={<HelpCircle size={20} color={Colors.onSurface.variant} />}
             label="Help Centre"
-            onPress={() => Alert.alert("Help", "Help centre coming soon.")}
+            onPress={() => router.push("/help")}
           />
           <SettingsLink
             icon={<Flag size={20} color={Colors.onSurface.variant} />}

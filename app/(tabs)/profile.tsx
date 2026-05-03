@@ -7,12 +7,14 @@ import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { useProfileStore, useAuthStore } from "@/stores";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentUser, loadProfile } = useProfileStore();
   const { signOut } = useAuthStore();
+  const { showAcademicYear, showGpa } = useSettingsStore();
 
   const handleSignOut = () => {
     Alert.alert("Sign Out", "Are you sure you want to sign out?", [
@@ -80,42 +82,48 @@ export default function ProfileScreen() {
         </View>
 
         {/* Stats Grid */}
-        <View className="flex-row gap-3 mt-6">
-          <View
-            className="flex-1 bg-surface-container-low rounded-lg p-4 items-center"
-            style={{ borderWidth: 1, borderColor: Colors.outline.variant + "33" }}
-          >
-            <Text
-              style={{
-                fontFamily: "WorkSans_600SemiBold", fontSize: 10,
-                letterSpacing: 1.5, textTransform: "uppercase",
-                color: Colors.onSurface.variant, marginBottom: 4,
-              }}
-            >
-              Academic Year
-            </Text>
-            <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 18, color: Colors.primary.DEFAULT }}>
-              Year {currentUser.academicYear}
-            </Text>
+        {(showAcademicYear || showGpa) && (
+          <View className="flex-row gap-3 mt-6">
+            {showAcademicYear && (
+              <View
+                className="flex-1 bg-surface-container-low rounded-lg p-4 items-center"
+                style={{ borderWidth: 1, borderColor: Colors.outline.variant + "33" }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "WorkSans_600SemiBold", fontSize: 10,
+                    letterSpacing: 1.5, textTransform: "uppercase",
+                    color: Colors.onSurface.variant, marginBottom: 4,
+                  }}
+                >
+                  Academic Year
+                </Text>
+                <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 18, color: Colors.primary.DEFAULT }}>
+                  Year {currentUser.academicYear}
+                </Text>
+              </View>
+            )}
+            {showGpa && (
+              <View
+                className="flex-1 bg-surface-container-low rounded-lg p-4 items-center"
+                style={{ borderWidth: 1, borderColor: Colors.outline.variant + "33" }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "WorkSans_600SemiBold", fontSize: 10,
+                    letterSpacing: 1.5, textTransform: "uppercase",
+                    color: Colors.onSurface.variant, marginBottom: 4,
+                  }}
+                >
+                  GPA Ranking
+                </Text>
+                <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 18, color: Colors.secondary.DEFAULT }}>
+                  {currentUser.gpaRanking ?? "N/A"}
+                </Text>
+              </View>
+            )}
           </View>
-          <View
-            className="flex-1 bg-surface-container-low rounded-lg p-4 items-center"
-            style={{ borderWidth: 1, borderColor: Colors.outline.variant + "33" }}
-          >
-            <Text
-              style={{
-                fontFamily: "WorkSans_600SemiBold", fontSize: 10,
-                letterSpacing: 1.5, textTransform: "uppercase",
-                color: Colors.onSurface.variant, marginBottom: 4,
-              }}
-            >
-              GPA Ranking
-            </Text>
-            <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 18, color: Colors.secondary.DEFAULT }}>
-              {currentUser.gpaRanking ?? "N/A"}
-            </Text>
-          </View>
-        </View>
+        )}
 
         {/* Active Courses */}
         <View className="mt-8">
