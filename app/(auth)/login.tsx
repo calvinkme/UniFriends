@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Mail } from "lucide-react-native";
 import { Image } from "expo-image";
 import { Colors } from "@/constants";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { signInWithGoogle, signInWithFacebook } from "@/services/auth";
 import { useAuthStore } from "@/stores";
 
@@ -39,15 +40,15 @@ export default function LoginScreen() {
     >
       {/* Top spacer + branding */}
       <View className="flex-1 items-center justify-center">
-        <View
-          className="w-24 h-24 rounded-3xl items-center justify-center mb-6"
-          style={{ backgroundColor: Colors.primary.container }}
-        >
-          <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 36, color: Colors.onPrimary.container }}>
-            UF
-          </Text>
-        </View>
-        <Text
+        <Animated.View entering={FadeInUp.duration(600).delay(100)}>
+          <Image
+            source={require("@/brand_assets/logo.png")}
+            style={{ width: 96, height: 96, borderRadius: 24, marginBottom: 20 }}
+            contentFit="contain"
+          />
+        </Animated.View>
+        <Animated.Text
+          entering={FadeInUp.duration(600).delay(200)}
           style={{
             fontFamily: "Manrope_800ExtraBold",
             fontSize: 32,
@@ -56,8 +57,9 @@ export default function LoginScreen() {
           }}
         >
           UniFriends
-        </Text>
-        <Text
+        </Animated.Text>
+        <Animated.Text
+          entering={FadeInUp.duration(600).delay(300)}
           style={{
             fontFamily: "WorkSans_400Regular",
             fontSize: 16,
@@ -68,7 +70,7 @@ export default function LoginScreen() {
           }}
         >
           Find your university crew
-        </Text>
+        </Animated.Text>
       </View>
 
       {/* Auth buttons */}

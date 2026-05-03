@@ -13,6 +13,8 @@ type InputProps = {
   keyboardType?: TextInput["props"]["keyboardType"];
   autoCapitalize?: TextInput["props"]["autoCapitalize"];
   maxLength?: number;
+  error?: string;
+  onBlur?: () => void;
 };
 
 const styles = StyleSheet.create({
@@ -41,6 +43,16 @@ const styles = StyleSheet.create({
   inputUnfocused: {
     backgroundColor: Colors.surface.containerHigh,
   },
+  inputError: {
+    backgroundColor: Colors.surface.containerLowest,
+    borderBottomWidth: 2,
+    borderBottomColor: "#C4474B",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#C4474B",
+    marginTop: 6,
+  },
 });
 
 export function Input({
@@ -53,6 +65,8 @@ export function Input({
   keyboardType,
   autoCapitalize,
   maxLength,
+  error,
+  onBlur: onBlurProp,
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -72,10 +86,14 @@ export function Input({
           autoCapitalize={autoCapitalize}
           maxLength={maxLength}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => { setIsFocused(false); onBlurProp?.(); }}
           style={[
             styles.input,
-            isFocused ? styles.inputFocused : styles.inputUnfocused,
+            error
+              ? styles.inputError
+              : isFocused
+                ? styles.inputFocused
+                : styles.inputUnfocused,
             { fontFamily: "WorkSans_400Regular" },
             secureTextEntry ? { paddingRight: 52 } : undefined,
           ]}
@@ -102,6 +120,9 @@ export function Input({
           </Pressable>
         )}
       </View>
+      {error ? (
+        <Text style={[styles.errorText, { fontFamily: "WorkSans_400Regular" }]}>{error}</Text>
+      ) : null}
     </View>
   );
 }

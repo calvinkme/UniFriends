@@ -9,10 +9,30 @@ const redirectUri = makeRedirectUri({
   path: "auth/callback",
 });
 
+function friendlyAuthError(error: { message: string; status?: number }): Error {
+  const msg = error.message.toLowerCase();
+  if (msg.includes("invalid login credentials")) {
+    return new Error("Invalid login credentials. Check your email and password.");
+  }
+  if (msg.includes("email not confirmed")) {
+    return new Error("Email not confirmed. Please verify your email first.");
+  }
+  if (msg.includes("user already registered") || msg.includes("already been registered")) {
+    return new Error("An account with this email already exists. Try signing in.");
+  }
+  if (msg.includes("signup is not allowed") || msg.includes("signups not allowed")) {
+    return new Error("Sign ups are currently disabled. Please try again later.");
+  }
+  if (msg.includes("rate limit") || msg.includes("too many requests") || error.status === 429) {
+    return new Error("Too many requests. Please wait a moment and try again.");
+  }
+  return new Error(error.message);
+}
+
 // Email auth
 export async function signUp(email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
+  if (error) throw friendlyAuthError(error);
   return data;
 }
 
@@ -22,7 +42,7 @@ export async function verifyOtp(email: string, token: string) {
     token,
     type: "signup",
   });
-  if (error) throw error;
+  if (error) throw friendlyAuthError(error);
   return data;
 }
 
@@ -31,12 +51,12 @@ export async function resendVerificationEmail(email: string) {
     type: "signup",
     email,
   });
-  if (error) throw error;
+  if (error) throw friendlyAuthError(error);
 }
 
 export async function signIn(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
+  if (error) throw friendlyAuthError(error);
   return data;
 }
 
