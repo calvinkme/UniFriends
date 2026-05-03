@@ -352,18 +352,18 @@ export default function ConnectionsScreen() {
         </ScrollView>
       )}
 
-      {matchedUser && (
-        <ConnectionModal
-          visible={!!matchedUser}
-          user={matchedUser}
-          onChat={() => {
-            const userId = matchedUser.id;
-            setMatchedUser(null);
-            router.push(`/chat/${userId}`);
-          }}
-          onClose={() => setMatchedUser(null)}
-        />
-      )}
+      <ConnectionModal
+        visible={!!matchedUser}
+        user={matchedUser ?? { id: "", firstName: "", lastName: "" } as UserProfile}
+        onChat={() => {
+          const userId = matchedUser?.id;
+          setMatchedUser(null);
+          if (userId) {
+            setTimeout(() => router.push(`/chat/${userId}`), 300);
+          }
+        }}
+        onClose={() => setMatchedUser(null)}
+      />
     </View>
   );
 }
