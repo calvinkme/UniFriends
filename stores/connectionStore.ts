@@ -14,7 +14,7 @@ type ConnectionStore = {
   /** Whether messaging is using Supabase (true) or mock data (false) */
   useSupabase: boolean;
   loadConnections: () => void;
-  addPendingConnection: (user: UserProfile, compatibilityScore: number) => void;
+  addPendingConnection: (user: UserProfile, compatibilityScore: number) => "matched" | "sent";
   acceptIncomingConnection: (userId: string) => void;
   declineIncomingConnection: (userId: string) => void;
   setActiveConversation: (id: string | null) => void;
@@ -64,6 +64,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   },
 
   addPendingConnection: (user, compatibilityScore) => {
+    const existingConn = get().connections.find((c) => c.user.id === user.id);
+    const isMatch = !!(existingConn && existingConn.status === "pending" && existingConn.direction === "incoming");
+
     set((state) => {
       const existingIndex = state.connections.findIndex((c) => c.user.id === user.id);
 
@@ -118,6 +121,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         connections: [pendingConnection, ...state.connections],
       };
     });
+
+    return isMatch ? "matched" : "sent";
   },
 
   acceptIncomingConnection: (userId) => {

@@ -17,6 +17,7 @@ type DiscoveryStore = {
   skippedIds: string[];
   connectedIds: string[];
   showConnectionModal: boolean;
+  connectionModalType: "sent" | "matched";
   lastConnectedUser: UserProfile | null;
   loadProfiles: () => void;
   loadMainFeed: () => void;
@@ -107,6 +108,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
   skippedIds: [],
   connectedIds: [],
   showConnectionModal: false,
+  connectionModalType: "sent",
   lastConnectedUser: null,
 
   loadProfiles: async () => {
@@ -150,6 +152,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
       skippedIds: [],
       connectedIds: [],
       showConnectionModal: false,
+      connectionModalType: "sent",
       lastConnectedUser: null,
     });
 
@@ -162,7 +165,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
     const currentProfile = profiles[currentIndex];
     if (!currentProfile) return;
 
-    useConnectionStore.getState().addPendingConnection(currentProfile, 0);
+    const result = useConnectionStore.getState().addPendingConnection(currentProfile, 0);
     const currentUserId = useAuthStore.getState().session?.user?.id;
     if (currentUserId && !currentProfile.id.startsWith("user-")) {
       createConnection(currentUserId, currentProfile.id).catch(() => {
@@ -174,6 +177,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
       connectedIds: [...connectedIds, currentProfile.id],
       currentIndex: currentIndex + 1,
       showConnectionModal: true,
+      connectionModalType: result,
       lastConnectedUser: currentProfile,
     });
   },
@@ -195,7 +199,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
     const profile = scoredProfiles.find((p) => p.id === id);
     if (!profile) return;
 
-    useConnectionStore.getState().addPendingConnection(profile, profile.compatibilityScore);
+    const result = useConnectionStore.getState().addPendingConnection(profile, profile.compatibilityScore);
     const currentUserId = useAuthStore.getState().session?.user?.id;
     if (currentUserId && !profile.id.startsWith("user-")) {
       createConnection(currentUserId, profile.id).catch(() => {
@@ -207,6 +211,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
       connectedIds: [...connectedIds, id],
       scoredProfiles: scoredProfiles.filter((p) => p.id !== id),
       showConnectionModal: true,
+      connectionModalType: result,
       lastConnectedUser: profile,
     });
   },

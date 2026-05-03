@@ -355,6 +355,7 @@ export default function ConnectionsScreen() {
       <ConnectionModal
         visible={!!matchedUser}
         user={matchedUser ?? { id: "", firstName: "", lastName: "" } as UserProfile}
+        mode="matched"
         onChat={() => {
           const userId = matchedUser?.id;
           setMatchedUser(null);

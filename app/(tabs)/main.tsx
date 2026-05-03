@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, RefreshControl, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useEffect, useState, useCallback } from "react";
 import { Colors } from "@/constants";
@@ -9,10 +10,12 @@ import { useDiscoveryStore, useProfileStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
 export default function MainScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { currentUser, loadProfile } = useProfileStore();
   const {
     scoredProfiles,
     showConnectionModal,
+    connectionModalType,
     lastConnectedUser,
     loadMainFeed,
     resetFeed,
@@ -157,9 +160,18 @@ export default function MainScreen() {
         </View>
       )}
 
-      {/* Connection Modal */}
-      {showConnectionModal && lastConnectedUser && (
-        <ConnectionModal user={lastConnectedUser} onDismiss={dismissConnectionModal} />
+      {lastConnectedUser && (
+        <ConnectionModal
+          visible={showConnectionModal}
+          user={lastConnectedUser}
+          mode={connectionModalType}
+          onChat={() => {
+            const userId = lastConnectedUser.id;
+            dismissConnectionModal();
+            setTimeout(() => router.push(`/chat/${userId}`), 300);
+          }}
+          onClose={dismissConnectionModal}
+        />
       )}
     </View>
   );

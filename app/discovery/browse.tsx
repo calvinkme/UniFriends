@@ -164,7 +164,7 @@ export default function BrowseScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
-    profiles, currentIndex, showConnectionModal, lastConnectedUser,
+    profiles, currentIndex, showConnectionModal, connectionModalType, lastConnectedUser,
     loadProfiles, acceptProfile, skipProfile, dismissConnectionModal,
   } = useDiscoveryStore();
 
@@ -253,9 +253,18 @@ export default function BrowseScreen() {
           </View>
         )}
 
-        {/* Connection Modal */}
-        {showConnectionModal && lastConnectedUser && (
-          <ConnectionModal user={lastConnectedUser} onDismiss={dismissConnectionModal} />
+        {lastConnectedUser && (
+          <ConnectionModal
+            visible={showConnectionModal}
+            user={lastConnectedUser}
+            mode={connectionModalType}
+            onChat={() => {
+              const userId = lastConnectedUser.id;
+              dismissConnectionModal();
+              setTimeout(() => router.push(`/chat/${userId}`), 300);
+            }}
+            onClose={dismissConnectionModal}
+          />
         )}
       </View>
     </GestureHandlerRootView>
