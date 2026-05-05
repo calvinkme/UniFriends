@@ -404,11 +404,11 @@ export default function ChatScreen() {
           <Pressable
             onPress={() => setEmojiOpen(true)}
             style={{
-              width: 44,
-              height: 44,
+              width: 48,
+              height: 48,
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 22,
+              borderRadius: 24,
             }}
             hitSlop={4}
           >
@@ -437,16 +437,16 @@ export default function ChatScreen() {
             onPress={handleSend}
             disabled={!inputText.trim()}
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
+              width: 48,
+              height: 48,
+              borderRadius: 24,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: inputText.trim() ? Colors.primary.DEFAULT : Colors.surface.containerHigh,
             }}
           >
             <Send
-              size={18}
+              size={24}
               color={inputText.trim() ? Colors.onPrimary.DEFAULT : Colors.onSurface.variant}
             />
           </Pressable>

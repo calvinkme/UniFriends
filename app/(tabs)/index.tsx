@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ChevronDown, Sparkles, ArrowRight } from "lucide-react-native";
@@ -16,8 +16,8 @@ export default function DiscoveryScreen() {
   const router = useRouter();
   const { currentUser, loadProfile } = useProfileStore();
   const {
-    fieldOfStudy, academicYear, interests, proximityKm,
-    setFieldOfStudy, setAcademicYear, toggleInterest, setProximity,
+    fieldOfStudy, major, academicYear, interests,
+    setFieldOfStudy, setMajor, setAcademicYear, toggleInterest,
   } = useFilterStore();
 
   const [showDegreeDropdown, setShowDegreeDropdown] = useState(false);
@@ -68,14 +68,14 @@ export default function DiscoveryScreen() {
           </Text>
         </View>
 
-        {/* Field of Study */}
+        {/* Degree Program */}
         <View className="mb-12">
           <View className="flex-row items-center justify-between mb-4">
             <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT }}>
-              Field of Study
+              Degree Program
             </Text>
             <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.tertiary.DEFAULT }}>
-              Select Major
+              Select Degree
             </Text>
           </View>
           <Pressable
@@ -111,6 +111,28 @@ export default function DiscoveryScreen() {
               ))}
             </View>
           )}
+        </View>
+
+        {/* Major */}
+        <View className="mb-12">
+          <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT, marginBottom: 12 }}>
+            Major
+          </Text>
+          <TextInput
+            value={major ?? ""}
+            onChangeText={(text) => setMajor(text || null)}
+            placeholder="e.g. Artificial Intelligence"
+            placeholderTextColor={Colors.outline.DEFAULT}
+            style={{
+              backgroundColor: Colors.surface.containerHigh,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              fontFamily: "WorkSans_400Regular",
+              fontSize: 16,
+              color: Colors.onSurface.DEFAULT,
+            }}
+          />
         </View>
 
         {/* Academic Year */}
@@ -183,67 +205,6 @@ export default function DiscoveryScreen() {
                 onRemove={() => toggleInterest(interest)}
               />
             ))}
-          </View>
-        </View>
-
-        {/* Proximity Slider */}
-        <View className="mb-12">
-          <View className="flex-row items-end justify-between mb-6">
-            <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT }}>
-              Proximity
-            </Text>
-            <View className="items-end">
-              <Text
-                style={{ fontFamily: "Manrope_700Bold", fontSize: 24, color: Colors.primary.DEFAULT }}
-              >
-                {proximityKm} km
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "WorkSans_500Medium",
-                  fontSize: 10,
-                  letterSpacing: 1.5,
-                  textTransform: "uppercase",
-                  color: Colors.onSurface.variant,
-                }}
-              >
-                Campus Radius
-              </Text>
-            </View>
-          </View>
-          <View className="px-2">
-            <View className="h-1 bg-surface-variant rounded-full overflow-hidden">
-              <View
-                className="h-full bg-primary rounded-full"
-                style={{ width: `${(proximityKm / 50) * 100}%` }}
-              />
-            </View>
-            {/* Simple pressable slider track */}
-            <Pressable
-              onPress={(e) => {
-                const ratio = Math.max(0.02, Math.min(1, e.nativeEvent.locationX / 300));
-                setProximity(Math.round(ratio * 50));
-              }}
-              className="h-10 -mt-5 justify-center"
-            />
-          </View>
-          <View className="flex-row justify-between mt-2">
-            <Text
-              style={{
-                fontFamily: "WorkSans_500Medium", fontSize: 10,
-                letterSpacing: 1.5, textTransform: "uppercase", color: Colors.onSurface.variant,
-              }}
-            >
-              Main Campus
-            </Text>
-            <Text
-              style={{
-                fontFamily: "WorkSans_500Medium", fontSize: 10,
-                letterSpacing: 1.5, textTransform: "uppercase", color: Colors.onSurface.variant,
-              }}
-            >
-              Greater Area
-            </Text>
           </View>
         </View>
 

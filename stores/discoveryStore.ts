@@ -53,7 +53,7 @@ function mapDbProfile(row: Record<string, unknown>): UserProfile {
 }
 
 function applyFilters(profiles: UserProfile[]): UserProfile[] {
-  const { fieldOfStudy, academicYear, interests } = useFilterStore.getState();
+  const { fieldOfStudy, major, academicYear, interests } = useFilterStore.getState();
 
   return profiles.filter((p) => {
     if (fieldOfStudy) {
@@ -61,6 +61,10 @@ function applyFilters(profiles: UserProfile[]): UserProfile[] {
       const matchesDegree = p.degree.toLowerCase().includes(lower);
       const matchesMajor = p.majors.some((m) => m.toLowerCase().includes(lower));
       if (!matchesDegree && !matchesMajor) return false;
+    }
+    if (major) {
+      const lowerMajor = major.toLowerCase();
+      if (!p.majors.some((m) => m.toLowerCase().includes(lowerMajor))) return false;
     }
     if (academicYear && p.academicYear !== academicYear) {
       return false;

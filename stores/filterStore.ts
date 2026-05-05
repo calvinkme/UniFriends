@@ -3,6 +3,7 @@ import type { FilterState } from "@/types";
 
 type FilterStore = FilterState & {
   setFieldOfStudy: (value: string | null) => void;
+  setMajor: (value: string | null) => void;
   setAcademicYear: (value: number | null) => void;
   toggleInterest: (interest: string) => void;
   setProximity: (km: number) => void;
@@ -11,6 +12,7 @@ type FilterStore = FilterState & {
 
 const initialState: FilterState = {
   fieldOfStudy: null,
+  major: null,
   academicYear: null,
   interests: [],
   proximityKm: 5,
@@ -19,6 +21,7 @@ const initialState: FilterState = {
 export const useFilterStore = create<FilterStore>((set) => ({
   ...initialState,
   setFieldOfStudy: (value) => set({ fieldOfStudy: value }),
+  setMajor: (value) => set({ major: value }),
   setAcademicYear: (value) =>
     set((state) => ({
       academicYear: state.academicYear === value ? null : value,

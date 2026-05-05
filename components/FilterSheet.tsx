@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Modal, ScrollView } from "react-native";
+import { View, Text, Pressable, Modal, ScrollView, TextInput } from "react-native";
 import { X, ChevronDown } from "lucide-react-native";
 import { useState } from "react";
 import { Colors } from "@/constants";
@@ -16,9 +16,11 @@ type FilterSheetProps = {
 export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
   const {
     fieldOfStudy,
+    major,
     academicYear,
     interests,
     setFieldOfStudy,
+    setMajor,
     setAcademicYear,
     toggleInterest,
     resetFilters,
@@ -108,7 +110,7 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
             contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 32 }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Field of Study */}
+            {/* Degree Program */}
             <View style={{ marginBottom: 28 }}>
               <Text
                 style={{
@@ -118,7 +120,7 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                   marginBottom: 12,
                 }}
               >
-                Field of Study
+                Degree Program
               </Text>
               <Pressable
                 onPress={() => setShowDegreeDropdown(!showDegreeDropdown)}
@@ -191,6 +193,35 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                   ))}
                 </View>
               )}
+            </View>
+
+            {/* Major */}
+            <View style={{ marginBottom: 28 }}>
+              <Text
+                style={{
+                  fontFamily: "Manrope_700Bold",
+                  fontSize: 16,
+                  color: Colors.onSurface.DEFAULT,
+                  marginBottom: 12,
+                }}
+              >
+                Major
+              </Text>
+              <TextInput
+                value={major ?? ""}
+                onChangeText={(text) => setMajor(text || null)}
+                placeholder="e.g. Artificial Intelligence"
+                placeholderTextColor={Colors.outline.DEFAULT}
+                style={{
+                  backgroundColor: Colors.surface.containerHigh,
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  fontFamily: "WorkSans_400Regular",
+                  fontSize: 15,
+                  color: Colors.onSurface.DEFAULT,
+                }}
+              />
             </View>
 
             {/* Academic Year */}

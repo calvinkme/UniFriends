@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Alert } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -39,19 +39,43 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-6 h-16">
+      {/* Header with quick actions */}
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24, height: 56 }}>
         <Text
-          className="text-primary"
-          style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 20, letterSpacing: -0.3 }}
+          style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 24, letterSpacing: -0.5, color: Colors.onSurface.DEFAULT }}
         >
-          UniFriends
+          My Profile
         </Text>
-        <Avatar
-          uri={currentUser.avatarUrl}
-          name={`${currentUser.firstName} ${currentUser.lastName}`}
-          size="sm"
-        />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Pressable
+            onPress={() => router.push("/edit-profile")}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: Colors.surface.containerHigh,
+            }}
+            hitSlop={4}
+          >
+            <Edit2 size={18} color={Colors.onSurface.DEFAULT} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push("/settings")}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: Colors.surface.containerHigh,
+            }}
+            hitSlop={4}
+          >
+            <Settings size={18} color={Colors.onSurface.DEFAULT} />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
@@ -207,8 +231,9 @@ export default function ProfileScreen() {
           <Button
             label="Edit Profile"
             onPress={() => router.push("/edit-profile")}
+            variant="surface"
             fullWidth
-            icon={<Edit2 size={18} color={Colors.onPrimary.DEFAULT} />}
+            icon={<Edit2 size={18} color={Colors.onSurface.variant} />}
           />
           <Button
             label="Settings"

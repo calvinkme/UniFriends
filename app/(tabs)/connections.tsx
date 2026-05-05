@@ -24,8 +24,10 @@ function ConnectionCard({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-4 p-4 rounded-lg bg-surface active:scale-[0.98]"
       style={{
+        padding: 14,
+        borderRadius: 12,
+        backgroundColor: Colors.surface.DEFAULT,
         borderWidth: 1,
         borderColor: Colors.outline.variant + "4D",
         shadowColor: Colors.onSurface.DEFAULT,
@@ -35,55 +37,59 @@ function ConnectionCard({
         elevation: 1,
       }}
     >
-      <Avatar
-        uri={connection.user.avatarUrl}
-        name={`${connection.user.firstName} ${connection.user.lastName}`}
-        size="md"
-      />
-      <View className="flex-1 min-w-0">
-        <View className="flex-row items-center gap-2 mb-0.5">
-          <Text
-            className="text-on-surface flex-shrink"
-            style={{ fontFamily: "Manrope_700Bold", fontSize: 15 }}
-            numberOfLines={1}
-          >
-            {connection.user.firstName} {connection.user.lastName}
-          </Text>
-          <Badge label={connection.user.degree.split(" ")[0]} />
+      <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 14 }}>
+        <Avatar
+          uri={connection.user.avatarUrl}
+          name={`${connection.user.firstName} ${connection.user.lastName}`}
+          size="md"
+        />
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 2 }}>
+            <Text
+              style={{ fontFamily: "Manrope_700Bold", fontSize: 15, color: Colors.onSurface.DEFAULT, flexShrink: 1 }}
+              numberOfLines={1}
+            >
+              {connection.user.firstName} {connection.user.lastName}
+            </Text>
+            <Badge label={connection.user.degree.split(" ")[0]} />
+          </View>
+          {connection.lastMessage && (
+            <Text
+              style={{ fontFamily: "WorkSans_400Regular", fontSize: 14, color: Colors.onSurface.variant }}
+              numberOfLines={1}
+            >
+              {connection.lastMessage}
+            </Text>
+          )}
         </View>
-        {connection.lastMessage && (
-          <Text
-            className="text-on-surface-variant"
-            style={{ fontFamily: "WorkSans_400Regular", fontSize: 14 }}
-            numberOfLines={1}
-          >
-            {connection.lastMessage}
-          </Text>
-        )}
-        {footer ? <View style={{ marginTop: 12 }}>{footer}</View> : null}
+        <View style={{ alignItems: "flex-end" }}>
+          {connection.lastMessageTime && (
+            <Text
+              style={{
+                fontFamily: "WorkSans_600SemiBold",
+                fontSize: 10,
+                color: Colors.onSurface.variant + "99",
+                marginBottom: 4,
+              }}
+            >
+              {connection.lastMessageTime}
+            </Text>
+          )}
+          {connection.unread && (
+            <View
+              style={{
+                width: 6, height: 6, borderRadius: 3,
+                backgroundColor: Colors.primary.container,
+              }}
+            />
+          )}
+        </View>
       </View>
-      <View className="items-end">
-        {connection.lastMessageTime && (
-          <Text
-            style={{
-              fontFamily: "WorkSans_600SemiBold",
-              fontSize: 10,
-              color: Colors.onSurface.variant + "99",
-              marginBottom: 4,
-            }}
-          >
-            {connection.lastMessageTime}
-          </Text>
-        )}
-        {connection.unread && (
-          <View
-            style={{
-              width: 6, height: 6, borderRadius: 3,
-              backgroundColor: Colors.primary.container,
-            }}
-          />
-        )}
-      </View>
+      {footer && (
+        <View style={{ marginTop: 12, paddingLeft: 62 }}>
+          {footer}
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -245,15 +251,15 @@ export default function ConnectionsScreen() {
                             style={{
                               flexDirection: "row",
                               alignItems: "center",
-                              gap: 6,
-                              backgroundColor: Colors.primary.DEFAULT,
-                              paddingHorizontal: 12,
-                              paddingVertical: 8,
+                              gap: 8,
+                              backgroundColor: Colors.secondary.DEFAULT,
+                              paddingHorizontal: 16,
+                              paddingVertical: 10,
                               borderRadius: 10,
                             }}
                           >
-                            <Check size={16} color={Colors.onPrimary.DEFAULT} />
-                            <Text style={{ fontFamily: "WorkSans_600SemiBold", color: Colors.onPrimary.DEFAULT }}>
+                            <Check size={18} color="#FFFFFF" />
+                            <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 14, color: "#FFFFFF" }}>
                               Accept
                             </Text>
                           </Pressable>
@@ -262,15 +268,15 @@ export default function ConnectionsScreen() {
                             style={{
                               flexDirection: "row",
                               alignItems: "center",
-                              gap: 6,
+                              gap: 8,
                               backgroundColor: Colors.surface.containerHigh,
-                              paddingHorizontal: 12,
-                              paddingVertical: 8,
+                              paddingHorizontal: 16,
+                              paddingVertical: 10,
                               borderRadius: 10,
                             }}
                           >
-                            <X size={16} color={Colors.onSurface.variant} />
-                            <Text style={{ fontFamily: "WorkSans_600SemiBold", color: Colors.onSurface.variant }}>
+                            <X size={18} color={Colors.onSurface.variant} />
+                            <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 14, color: Colors.onSurface.variant }}>
                               Decline
                             </Text>
                           </Pressable>

@@ -96,6 +96,7 @@ export type ScoredProfile = UserProfile & { compatibilityScore: number };
 
 export type FilterState = {
   fieldOfStudy: string | null;
+  major: string | null;
   academicYear: number | null;
   interests: string[];
   proximityKm: number;
