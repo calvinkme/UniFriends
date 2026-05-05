@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { Image } from "expo-image";
 import { Colors } from "@/constants";
 
-type AvatarSize = "sm" | "md" | "lg" | "xl";
+type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 type AvatarProps = {
   uri?: string;
@@ -15,6 +15,7 @@ type AvatarProps = {
 };
 
 const sizeMap: Record<AvatarSize, { container: number; text: string; dot: number; ringWidth: number }> = {
+  xs: { container: 24, text: "text-xs", dot: 8, ringWidth: 1 },
   sm: { container: 32, text: "text-xs", dot: 10, ringWidth: 1.5 },
   md: { container: 48, text: "text-base", dot: 12, ringWidth: 2 },
   lg: { container: 64, text: "text-lg", dot: 14, ringWidth: 2 },
@@ -89,7 +90,7 @@ export function Avatar({
           style={{
             width: config.container,
             height: config.container,
-            borderRadius: size === "md" || size === "sm" ? 12 : 9999,
+            borderRadius: size === "md" || size === "sm" || size === "xs" ? 12 : 9999,
           }}
           contentFit="cover"
           transition={200}
@@ -99,7 +100,7 @@ export function Avatar({
           style={{
             width: config.container,
             height: config.container,
-            borderRadius: size === "md" || size === "sm" ? 12 : 9999,
+            borderRadius: size === "md" || size === "sm" || size === "xs" ? 12 : 9999,
             backgroundColor: Colors.primary.container,
             alignItems: "center",
             justifyContent: "center",

@@ -1,12 +1,13 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Modal, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Check, Search, X } from "lucide-react-native";
+import { Check, Search, X, Plus } from "lucide-react-native";
 import { type ReactNode, useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { ConnectionModal } from "@/components/ConnectionModal";
 import { useConnectionStore } from "@/stores";
 import type { Connection, UserProfile } from "@/types";
@@ -90,13 +91,31 @@ function ConnectionCard({
 export default function ConnectionsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { connections, groups, loadConnections, acceptIncomingConnection, declineIncomingConnection } = useConnectionStore();
+  const { connections, groups, loadConnections, acceptIncomingConnection, declineIncomingConnection, createGroup } = useConnectionStore();
   const [activeTab, setActiveTab] = useState<"people" | "groups">("people");
   const [matchedUser, setMatchedUser] = useState<UserProfile | null>(null);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
 
   const handleAccept = (connection: Connection) => {
     acceptIncomingConnection(connection.user.id);
     setMatchedUser(connection.user);
+  };
+
+  const handleCreateGroup = () => {
+    if (!groupName.trim() || selectedMemberIds.length === 0) return;
+    const group = createGroup(groupName.trim(), selectedMemberIds);
+    setShowCreateGroup(false);
+    setGroupName("");
+    setSelectedMemberIds([]);
+    router.push(`/chat/group/${group.id}`);
+  };
+
+  const toggleMember = (id: string) => {
+    setSelectedMemberIds((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
   };
 
   useEffect(() => {
@@ -309,47 +328,186 @@ export default function ConnectionsScreen() {
           <View style={{ height: 100 }} />
         </ScrollView>
       ) : (
-        <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-          {groups.length > 0 ? (
-            <View className="gap-3 mt-4">
-              {groups.map((group) => (
-                <Pressable
-                  key={group.id}
-                  className="p-4 rounded-lg bg-surface active:scale-[0.98]"
-                  style={{ borderWidth: 1, borderColor: Colors.outline.variant + "4D" }}
-                >
-                  <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
-                    {group.name}
-                  </Text>
-                  <Text
-                    style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 4 }}
+        <View style={{ flex: 1 }}>
+          <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            {groups.length > 0 ? (
+              <View className="gap-3 mt-4">
+                {groups.map((group) => (
+                  <Pressable
+                    key={group.id}
+                    className="p-4 rounded-lg bg-surface active:scale-[0.98]"
+                    style={{ borderWidth: 1, borderColor: Colors.outline.variant + "4D" }}
+                    onPress={() => router.push(`/chat/group/${group.id}`)}
                   >
-                    {group.members.length} members
-                  </Text>
-                  <View className="flex-row mt-3 -space-x-2">
-                    {group.members.slice(0, 4).map((member, i) => (
-                      <View key={member.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 4 - i }}>
-                        <Avatar uri={member.avatarUrl} name={`${member.firstName}`} size="sm" />
-                      </View>
-                    ))}
-                  </View>
-                </Pressable>
-              ))}
-            </View>
-          ) : (
-            <View className="flex-1 items-center justify-center py-20">
-              <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 16, color: Colors.onSurface.variant }}>
-                No groups yet
-              </Text>
-              <Text
-                style={{ fontFamily: "WorkSans_400Regular", fontSize: 14, color: Colors.onSurface.variant, marginTop: 4, textAlign: "center" }}
+                    <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
+                      {group.name}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 4 }}
+                    >
+                      {group.members.length} members
+                    </Text>
+                    <View className="flex-row mt-3 -space-x-2">
+                      {group.members.slice(0, 4).map((member, i) => (
+                        <View key={member.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 4 - i }}>
+                          <Avatar uri={member.avatarUrl} name={`${member.firstName}`} size="sm" />
+                        </View>
+                      ))}
+                    </View>
+                  </Pressable>
+                ))}
+              </View>
+            ) : (
+              <View className="flex-1 items-center justify-center py-20">
+                <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 16, color: Colors.onSurface.variant }}>
+                  No groups yet
+                </Text>
+                <Text
+                  style={{ fontFamily: "WorkSans_400Regular", fontSize: 14, color: Colors.onSurface.variant, marginTop: 4, textAlign: "center" }}
+                >
+                  Create a group to connect with multiple friends at once
+                </Text>
+              </View>
+            )}
+            <View style={{ height: 100 }} />
+          </ScrollView>
+
+          {/* FAB */}
+          <Pressable
+            onPress={() => setShowCreateGroup(true)}
+            style={{
+              position: "absolute",
+              right: 24,
+              bottom: insets.bottom + 88,
+              width: 56,
+              height: 56,
+              borderRadius: 16,
+              backgroundColor: Colors.primary.DEFAULT,
+              alignItems: "center",
+              justifyContent: "center",
+              elevation: 6,
+              shadowColor: Colors.primary.DEFAULT,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+            }}
+          >
+            <Plus size={24} color={Colors.onPrimary.DEFAULT} />
+          </Pressable>
+
+          {/* Create Group Modal */}
+          <Modal
+            visible={showCreateGroup}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setShowCreateGroup(false)}
+          >
+            <View style={{ flex: 1, backgroundColor: "#00000044", justifyContent: "flex-end" }}>
+              <View
+                style={{
+                  backgroundColor: Colors.background,
+                  borderTopLeftRadius: 24,
+                  borderTopRightRadius: 24,
+                  paddingTop: 20,
+                  paddingBottom: insets.bottom + 24,
+                  paddingHorizontal: 24,
+                  maxHeight: "80%",
+                }}
               >
-                Create a group to connect with multiple friends at once
-              </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                  <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 20, color: Colors.onSurface.DEFAULT }}>
+                    New Group
+                  </Text>
+                  <Pressable
+                    onPress={() => { setShowCreateGroup(false); setGroupName(""); setSelectedMemberIds([]); }}
+                    hitSlop={8}
+                  >
+                    <X size={22} color={Colors.onSurface.variant} />
+                  </Pressable>
+                </View>
+
+                <TextInput
+                  value={groupName}
+                  onChangeText={setGroupName}
+                  placeholder="Group name"
+                  placeholderTextColor={Colors.outline.DEFAULT}
+                  style={{
+                    backgroundColor: Colors.surface.containerHigh,
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    fontFamily: "WorkSans_400Regular",
+                    fontSize: 15,
+                    color: Colors.onSurface.DEFAULT,
+                    marginBottom: 20,
+                  }}
+                />
+
+                <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: Colors.onSurface.variant, marginBottom: 12 }}>
+                  Add Members ({selectedMemberIds.length} selected)
+                </Text>
+
+                <ScrollView style={{ maxHeight: 300 }} showsVerticalScrollIndicator={false}>
+                  {acceptedConnections.length === 0 ? (
+                    <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 14, color: Colors.onSurface.variant, textAlign: "center", paddingVertical: 20 }}>
+                      No connections yet. Connect with people first!
+                    </Text>
+                  ) : (
+                    <View style={{ gap: 8 }}>
+                      {acceptedConnections.map((conn) => {
+                        const selected = selectedMemberIds.includes(conn.user.id);
+                        return (
+                          <Pressable
+                            key={conn.user.id}
+                            onPress={() => toggleMember(conn.user.id)}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 12,
+                              padding: 12,
+                              borderRadius: 12,
+                              backgroundColor: selected ? Colors.primary.DEFAULT + "14" : Colors.surface.containerLow,
+                              borderWidth: 1,
+                              borderColor: selected ? Colors.primary.DEFAULT + "44" : "transparent",
+                            }}
+                          >
+                            <Avatar uri={conn.user.avatarUrl} name={`${conn.user.firstName} ${conn.user.lastName}`} size="sm" />
+                            <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 15, color: Colors.onSurface.DEFAULT, flex: 1 }}>
+                              {conn.user.firstName} {conn.user.lastName}
+                            </Text>
+                            <View
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 12,
+                                borderWidth: 2,
+                                borderColor: selected ? Colors.primary.DEFAULT : Colors.outline.variant,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: selected ? Colors.primary.DEFAULT : "transparent",
+                              }}
+                            >
+                              {selected && <Check size={14} color={Colors.onPrimary.DEFAULT} />}
+                            </View>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  )}
+                </ScrollView>
+
+                <View style={{ marginTop: 20 }}>
+                  <Button
+                    label="Create Group"
+                    onPress={handleCreateGroup}
+                    fullWidth
+                    disabled={!groupName.trim() || selectedMemberIds.length === 0}
+                  />
+                </View>
+              </View>
             </View>
-          )}
-          <View style={{ height: 100 }} />
-        </ScrollView>
+          </Modal>
+        </View>
       )}
 
       <ConnectionModal

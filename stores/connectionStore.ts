@@ -10,6 +10,7 @@ type ConnectionStore = {
   connections: Connection[];
   conversations: Conversation[];
   groups: Group[];
+  blockedUserIds: string[];
   activeConversationId: string | null;
   /** Whether messaging is using Supabase (true) or mock data (false) */
   useSupabase: boolean;
@@ -32,6 +33,12 @@ type ConnectionStore = {
   loadConversations: () => Promise<void>;
   /** Get or create a conversation via Supabase */
   getOrCreateConversationAsync: (otherUserId: string) => Promise<Conversation>;
+  /** Create a new group with selected members */
+  createGroup: (name: string, memberIds: string[]) => Group;
+  /** Block a user */
+  blockUser: (userId: string) => void;
+  /** Unblock a user */
+  unblockUser: (userId: string) => void;
 };
 
 function getCurrentUserId(): string {
@@ -42,6 +49,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   connections: [],
   conversations: [],
   groups: [],
+  blockedUserIds: [],
   activeConversationId: null,
   useSupabase: false,
 
@@ -467,5 +475,66 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           : c
       ),
     }));
+  },
+
+  createGroup: (name, memberIds) => {
+    const currentUserId = getCurrentUserId();
+    const members: UserProfile[] = [];
+
+    for (const id of memberIds) {
+      const conn = get().connections.find((c) => c.user.id === id);
+      if (conn) members.push(conn.user);
+    }
+
+    const currentProfile = useAuthStore.getState().profile;
+    if (currentProfile) {
+      members.unshift(currentProfile);
+    }
+
+    const groupId = `group-${Date.now()}`;
+    const group: Group = {
+      id: groupId,
+      name,
+      members,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    const groupConvo: Conversation = {
+      id: `convo-group-${groupId}`,
+      participantIds: [currentUserId, ...memberIds],
+      isGroup: true,
+      groupName: name,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    set((state) => ({
+      groups: [group, ...state.groups],
+      conversations: [...state.conversations, groupConvo],
+    }));
+
+    return group;
+  },
+
+  blockUser: (userId) => {
+    const currentUserId = getCurrentUserId();
+    set((state) => ({
+      blockedUserIds: [...state.blockedUserIds, userId],
+      connections: state.connections.filter((c) => c.user.id !== userId),
+    }));
+    if (currentUserId !== "current-user") {
+      db.blockUser(currentUserId, userId).catch(() => {});
+    }
+  },
+
+  unblockUser: (userId) => {
+    const currentUserId = getCurrentUserId();
+    set((state) => ({
+      blockedUserIds: state.blockedUserIds.filter((id) => id !== userId),
+    }));
+    if (currentUserId !== "current-user") {
+      db.unblockUser(currentUserId, userId).catch(() => {});
+    }
   },
 }));

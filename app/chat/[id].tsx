@@ -7,17 +7,19 @@ import {
   Platform,
   FlatList,
   Modal,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
-import { ArrowLeft, Send, Smile, X, Reply, Copy, Trash2 } from "lucide-react-native";
+import { ArrowLeft, Send, Smile, X, Reply, Copy, Trash2, MoreVertical, Flag, Ban } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import EmojiPicker from "rn-emoji-keyboard";
 import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
 import { useConnectionStore, useAuthStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
+import { reportUser } from "@/services/database";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import type { Message } from "@/types";
 
@@ -27,7 +29,7 @@ export default function ChatScreen() {
   const {
     connections, conversations, sendMessage, getOrCreateConversation,
     getOrCreateConversationAsync, deleteMessage, loadMessages,
-    useSupabase, setActiveConversation,
+    useSupabase, setActiveConversation, blockUser,
   } = useConnectionStore();
   const session = useAuthStore((s) => s.session);
   const currentUserId = session?.user?.id ?? CURRENT_USER.id;
@@ -36,6 +38,7 @@ export default function ChatScreen() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const flatListRef = useRef<FlatList<Message>>(null);
   const inputRef = useRef<TextInput>(null);
 
@@ -110,6 +113,48 @@ export default function ChatScreen() {
     setSelectedMessage(null);
   };
 
+  const handleBlockUser = () => {
+    if (!id || !user) return;
+    setShowUserMenu(false);
+    Alert.alert(
+      `Block ${user.firstName}?`,
+      "They won't be able to find your profile or message you. You can unblock them later from settings.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Block",
+          style: "destructive",
+          onPress: () => {
+            blockUser(id);
+            router.back();
+          },
+        },
+      ],
+    );
+  };
+
+  const handleReportUser = () => {
+    if (!id || !user) return;
+    setShowUserMenu(false);
+    const reasons = ["Harassment", "Spam", "Fake Profile", "Inappropriate Content", "Other"];
+    Alert.alert(
+      `Report ${user.firstName}?`,
+      "Select a reason for your report. Our team will review it within 24 hours.",
+      [
+        ...reasons.map((reason) => ({
+          text: reason,
+          onPress: () => {
+            if (currentUserId !== CURRENT_USER.id) {
+              reportUser(currentUserId, id, reason).catch(() => {});
+            }
+            Alert.alert("Report Submitted", "Thank you. We'll review this and take appropriate action.");
+          },
+        })),
+        { text: "Cancel", style: "cancel" as const },
+      ],
+    );
+  };
+
   // Check if the selected message can be deleted (own message, within 2 hours)
   const canDeleteSelected = useMemo(() => {
     if (!selectedMessage) return false;
@@ -179,6 +224,13 @@ export default function ChatScreen() {
               {user.isOnline ? "Online" : "Offline"}
             </Text>
           </View>
+          <Pressable
+            onPress={() => setShowUserMenu(true)}
+            style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}
+            hitSlop={8}
+          >
+            <MoreVertical size={20} color={Colors.onSurface.variant} />
+          </Pressable>
         </View>
 
         {/* Messages */}
@@ -532,6 +584,69 @@ export default function ChatScreen() {
                   </Pressable>
                 </>
               )}
+            </Pressable>
+          </Pressable>
+        </Modal>
+        {/* User action menu */}
+        <Modal
+          visible={showUserMenu}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowUserMenu(false)}
+        >
+          <Pressable
+            style={{ flex: 1, backgroundColor: "#00000044", justifyContent: "center", alignItems: "center" }}
+            onPress={() => setShowUserMenu(false)}
+          >
+            <Pressable
+              style={{
+                backgroundColor: Colors.surface.containerLowest,
+                borderRadius: 16,
+                width: 240,
+                overflow: "hidden",
+                elevation: 8,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 12,
+              }}
+              onPress={() => {}}
+            >
+              <Pressable
+                onPress={handleReportUser}
+                style={({ pressed }) => ({
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  backgroundColor: pressed ? Colors.surface.containerHigh : "transparent",
+                })}
+              >
+                <Flag size={18} color={Colors.onSurface.DEFAULT} />
+                <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 15, color: Colors.onSurface.DEFAULT }}>
+                  Report {user?.firstName}
+                </Text>
+              </Pressable>
+
+              <View style={{ height: 0.5, backgroundColor: Colors.outline.variant + "33" }} />
+
+              <Pressable
+                onPress={handleBlockUser}
+                style={({ pressed }) => ({
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  backgroundColor: pressed ? Colors.error.container : "transparent",
+                })}
+              >
+                <Ban size={18} color={Colors.error.DEFAULT} />
+                <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 15, color: Colors.error.DEFAULT }}>
+                  Block {user?.firstName}
+                </Text>
+              </Pressable>
             </Pressable>
           </Pressable>
         </Modal>

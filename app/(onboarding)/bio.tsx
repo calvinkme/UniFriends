@@ -2,7 +2,7 @@ import { View, Text, Pressable, Alert, ActivityIndicator, ScrollView, KeyboardAv
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ArrowLeft, Camera } from "lucide-react-native";
+import { ArrowLeft, Camera, AlertTriangle } from "lucide-react-native";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "@/constants";
@@ -18,6 +18,7 @@ export default function BioScreen() {
   const store = useOnboardingStore();
   const { session, setProfile } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [avatarWarning, setAvatarWarning] = useState<string | null>(null);
 
   const canContinue = store.bio.trim().length >= 10;
 
@@ -72,10 +73,10 @@ export default function BioScreen() {
               .getPublicUrl(filePath);
             avatarUrl = urlData.publicUrl;
           } else {
-            console.warn("Avatar upload error:", uploadError.message);
+            setAvatarWarning("Photo upload failed — your profile was saved without a photo. You can add one later.");
           }
-        } catch (avatarErr) {
-          console.warn("Avatar upload failed, continuing without avatar:", avatarErr);
+        } catch {
+          setAvatarWarning("Photo upload failed — your profile was saved without a photo. You can add one later.");
         }
       }
 
@@ -128,7 +129,6 @@ export default function BioScreen() {
       router.replace("/(tabs)");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Please try again.";
-      console.error("Profile save error:", err);
       Alert.alert("Profile Save Failed", message);
     } finally {
       setIsSubmitting(false);
@@ -269,6 +269,32 @@ export default function BioScreen() {
       </ScrollView>
 
         <View className="px-8" style={{ paddingBottom: insets.bottom + 24 }}>
+          {avatarWarning && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                backgroundColor: "#E8A23D" + "1A",
+                borderRadius: 12,
+                padding: 14,
+                marginBottom: 12,
+              }}
+            >
+              <AlertTriangle size={18} color="#E8A23D" />
+              <Text
+                style={{
+                  fontFamily: "WorkSans_500Medium",
+                  fontSize: 13,
+                  color: "#E8A23D",
+                  flex: 1,
+                  lineHeight: 18,
+                }}
+              >
+                {avatarWarning}
+              </Text>
+            </View>
+          )}
           {isSubmitting && (
             <ActivityIndicator
               size="small"

@@ -15,10 +15,12 @@ import {
   LogOut,
   MessageCircle,
   Flag,
+  Lock,
 } from "lucide-react-native";
 import { Colors } from "@/constants";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useSettingsStore } from "@/stores/settingsStore";
+import { deleteAccount as deleteAccountFromDb } from "@/services/database";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -44,8 +46,30 @@ export default function SettingsScreen() {
           text: "Delete Account",
           style: "destructive",
           onPress: () => {
-            Alert.alert("Account Deleted", "Your account has been scheduled for deletion.");
-            signOut();
+            Alert.alert(
+              "Are you sure?",
+              "Type DELETE to confirm account deletion.",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Yes, Delete Everything",
+                  style: "destructive",
+                  onPress: async () => {
+                    try {
+                      const userId = session?.user?.id;
+                      if (userId) {
+                        await deleteAccountFromDb(userId);
+                      }
+                      await signOut();
+                      Alert.alert("Account Deleted", "Your account and all data have been permanently deleted.");
+                    } catch {
+                      await signOut();
+                      Alert.alert("Account Deleted", "Your account has been scheduled for deletion. Some data may take a few minutes to be fully removed.");
+                    }
+                  },
+                },
+              ],
+            );
           },
         },
       ],
@@ -98,6 +122,11 @@ export default function SettingsScreen() {
             icon={<User size={20} color={Colors.onSurface.variant} />}
             label="University"
             value={currentUser?.university ?? "Not set"}
+          />
+          <SettingsLink
+            icon={<Lock size={20} color={Colors.onSurface.variant} />}
+            label="Change Password"
+            onPress={() => router.push("/change-password")}
           />
         </SettingsSection>
 

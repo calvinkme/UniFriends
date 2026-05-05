@@ -127,7 +127,9 @@ export default function EditProfileScreen() {
     );
   };
 
-  const handleSave = () => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
       Alert.alert("Required", "First and last name are required.");
       return;
@@ -144,22 +146,29 @@ export default function EditProfileScreen() {
       return;
     }
 
-    updateProfile({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      avatarUrl,
-      university,
-      degree,
-      majors,
-      age: parsedAge,
-      academicYear,
-      bio: bio.trim(),
-      interests,
-      activeCourses: coursesList,
-      gpaRanking: gpaRanking.trim() || undefined,
-    });
-
-    router.back();
+    setIsSaving(true);
+    try {
+      await updateProfile({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        avatarUrl,
+        university,
+        degree,
+        majors,
+        age: parsedAge,
+        academicYear,
+        bio: bio.trim(),
+        interests,
+        activeCourses: coursesList,
+        gpaRanking: gpaRanking.trim() || undefined,
+      });
+      router.back();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Please try again.";
+      Alert.alert("Save Failed", message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const hasChanges =
@@ -212,15 +221,15 @@ export default function EditProfileScreen() {
           <Text style={{ fontFamily: "Manrope_800ExtraBold", fontSize: 18, color: Colors.onSurface.DEFAULT }}>
             Edit Profile
           </Text>
-          <Pressable onPress={handleSave} hitSlop={8}>
+          <Pressable onPress={handleSave} hitSlop={8} disabled={isSaving}>
             <Text
               style={{
                 fontFamily: "Manrope_700Bold",
                 fontSize: 15,
-                color: hasChanges ? Colors.primary.DEFAULT : Colors.onSurface.variant + "66",
+                color: isSaving ? Colors.onSurface.variant + "66" : hasChanges ? Colors.primary.DEFAULT : Colors.onSurface.variant + "66",
               }}
             >
-              Save
+              {isSaving ? "Saving..." : "Save"}
             </Text>
           </Pressable>
         </View>

@@ -315,6 +315,59 @@ export async function savePushToken(
   if (error) console.warn("savePushToken error:", error.message);
 }
 
+// ─── Block & Report ─────────────────────────────────────────
+
+export async function blockUser(blockerId: string, blockedId: string) {
+  const { error } = await supabase
+    .from("blocked_users")
+    .upsert(
+      { blocker_id: blockerId, blocked_id: blockedId, created_at: new Date().toISOString() },
+      { onConflict: "blocker_id,blocked_id" },
+    );
+  if (error) throw error;
+}
+
+export async function unblockUser(blockerId: string, blockedId: string) {
+  const { error } = await supabase
+    .from("blocked_users")
+    .delete()
+    .eq("blocker_id", blockerId)
+    .eq("blocked_id", blockedId);
+  if (error) throw error;
+}
+
+export async function getBlockedUsers(userId: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("blocked_users")
+    .select("blocked_id")
+    .eq("blocker_id", userId);
+  if (error) return [];
+  return (data ?? []).map((r) => r.blocked_id);
+}
+
+export async function reportUser(
+  reporterId: string,
+  reportedId: string,
+  reason: string,
+  details?: string,
+) {
+  const { error } = await supabase
+    .from("reports")
+    .insert({
+      reporter_id: reporterId,
+      reported_id: reportedId,
+      reason,
+      details: details ?? null,
+      created_at: new Date().toISOString(),
+    });
+  if (error) throw error;
+}
+
+export async function deleteAccount(userId: string) {
+  const { error } = await supabase.rpc("delete_user_account", { target_user_id: userId });
+  if (error) throw error;
+}
+
 // ─── University data ─────────────────────────────────────────
 
 export async function getUniversities() {

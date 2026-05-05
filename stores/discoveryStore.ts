@@ -7,6 +7,7 @@ import { useAuthStore } from "./authStore";
 import { useConnectionStore } from "./connectionStore";
 import { useProfileStore } from "./profileStore";
 import { useFilterStore } from "./filterStore";
+import { getBlockedUsers } from "@/services/database";
 
 type DiscoveryStore = {
   // Legacy: index-based for browse.tsx swipe UI
@@ -77,9 +78,21 @@ async function fetchDiscoverableProfiles(excludeIds: string[]): Promise<UserProf
   const userId = useAuthStore.getState().session?.user?.id;
   let rawProfiles: UserProfile[] = [];
 
+  let blockedIds: string[] = useConnectionStore.getState().blockedUserIds;
   try {
     if (userId) {
-      const rows = await getDiscoverableProfiles({ excludeIds });
+      const serverBlocked = await getBlockedUsers(userId);
+      if (serverBlocked.length > 0) blockedIds = [...new Set([...blockedIds, ...serverBlocked])];
+    }
+  } catch {
+    // Use local blocked list only
+  }
+
+  const allExcluded = [...new Set([...excludeIds, ...blockedIds])];
+
+  try {
+    if (userId) {
+      const rows = await getDiscoverableProfiles({ excludeIds: allExcluded });
       if (rows && rows.length > 0) {
         rawProfiles = rows.map(mapDbProfile);
       }
@@ -88,7 +101,7 @@ async function fetchDiscoverableProfiles(excludeIds: string[]): Promise<UserProf
     // Fall through to mock data
   }
 
-  const excluded = new Set(excludeIds);
+  const excluded = new Set(allExcluded);
   const fallbackProfiles = MOCK_USERS.filter((user) => !excluded.has(user.id));
   const seenIds = new Set(rawProfiles.map((user) => user.id));
 
@@ -138,8 +151,8 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
       rawProfiles = await fetchDiscoverableProfiles([currentUser.id]);
     }
 
-    // No filters — rank ALL profiles by algorithm
-    const scored = rankAllProfiles(currentUser, rawProfiles);
+    const filtered = applyFilters(rawProfiles);
+    const scored = rankAllProfiles(currentUser, filtered);
 
     set({ scoredProfiles: scored });
   },
