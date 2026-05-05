@@ -60,6 +60,13 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
+export async function resetPassword(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUri,
+  });
+  if (error) throw friendlyAuthError(error);
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;

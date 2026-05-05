@@ -16,7 +16,6 @@ const PASSWORD_RULES = [
   { key: "upper", label: "One uppercase letter", test: (pw: string) => /[A-Z]/.test(pw) },
   { key: "lower", label: "One lowercase letter", test: (pw: string) => /[a-z]/.test(pw) },
   { key: "number", label: "One number", test: (pw: string) => /[0-9]/.test(pw) },
-  { key: "special", label: "One special character (!@#$...)", test: (pw: string) => /[^A-Za-z0-9]/.test(pw) },
 ] as const;
 
 function PasswordRule({ label, met }: { label: string; met: boolean }) {
@@ -240,6 +239,22 @@ export default function EmailScreen() {
                   <PasswordRule key={rule.key} label={rule.label} met={rule.test(password)} />
                 ))}
               </View>
+            )}
+            {!isSignUp && (
+              <Pressable
+                onPress={() => router.push("/(auth)/forgot-password")}
+                style={{ alignSelf: "flex-end", marginTop: 10 }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "WorkSans_500Medium",
+                    fontSize: 13,
+                    color: Colors.primary.DEFAULT,
+                  }}
+                >
+                  Forgot Password?
+                </Text>
+              </Pressable>
             )}
           </View>
         </View>
