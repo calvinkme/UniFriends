@@ -226,7 +226,6 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
 
     set({
       connectedIds: [...connectedIds, id],
-      scoredProfiles: scoredProfiles.filter((p) => p.id !== id),
       showConnectionModal: true,
       connectionModalType: result,
       lastConnectedUser: profile,

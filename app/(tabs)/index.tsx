@@ -211,7 +211,7 @@ export default function DiscoveryScreen() {
         {/* Show Results CTA */}
         <View className="pt-4 pb-8">
           <Button
-            label="Show Results"
+            label="Find Students"
             onPress={() => router.push("/discovery/browse")}
             fullWidth
             icon={<ArrowRight size={20} color={Colors.onPrimary.DEFAULT} />}
