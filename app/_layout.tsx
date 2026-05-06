@@ -156,6 +156,9 @@ export default function RootLayout() {
         <Stack.Screen name="edit-profile" options={{ animation: "slide_from_right" }} />
         <Stack.Screen name="settings" options={{ animation: "slide_from_right" }} />
         <Stack.Screen name="change-password" options={{ animation: "slide_from_right" }} />
+        <Stack.Screen name="terms" options={{ animation: "slide_from_right" }} />
+        <Stack.Screen name="privacy" options={{ animation: "slide_from_right" }} />
+        <Stack.Screen name="licences" options={{ animation: "slide_from_right" }} />
       </Stack>
     </SafeAreaProvider>
   );

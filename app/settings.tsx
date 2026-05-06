@@ -222,17 +222,17 @@ export default function SettingsScreen() {
           <SettingsLink
             icon={<FileText size={20} color={Colors.onSurface.variant} />}
             label="Terms of Service"
-            onPress={() => Alert.alert("Terms", "Terms of Service coming soon.")}
+            onPress={() => router.push("/terms")}
           />
           <SettingsLink
             icon={<Shield size={20} color={Colors.onSurface.variant} />}
             label="Privacy Policy"
-            onPress={() => Alert.alert("Privacy", "Privacy Policy coming soon.")}
+            onPress={() => router.push("/privacy")}
           />
           <SettingsLink
             icon={<FileText size={20} color={Colors.onSurface.variant} />}
             label="Open Source Licences"
-            onPress={() => Alert.alert("Licences", "Open Source Licences coming soon.")}
+            onPress={() => router.push("/licences")}
           />
         </SettingsSection>
 
