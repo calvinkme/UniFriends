@@ -12,11 +12,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
-import { ArrowLeft, Send, Smile, X, Reply, Copy, Trash2, MoreVertical, Flag, Ban } from "lucide-react-native";
+import { ArrowLeft, Send, Smile, X, Reply, Copy, Trash2, MoreVertical, Flag, Ban, Info } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import EmojiPicker from "rn-emoji-keyboard";
 import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
+import { MessageStatus } from "@/components/ui/MessageStatus";
 import { useConnectionStore, useAuthStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
 import { reportUser } from "@/services/database";
@@ -29,7 +30,7 @@ export default function ChatScreen() {
   const {
     connections, conversations, sendMessage, getOrCreateConversation,
     getOrCreateConversationAsync, deleteMessage, loadMessages,
-    useSupabase, setActiveConversation, blockUser,
+    useSupabase, setActiveConversation, blockUser, markAsRead,
   } = useConnectionStore();
   const session = useAuthStore((s) => s.session);
   const currentUserId = session?.user?.id ?? CURRENT_USER.id;
@@ -38,6 +39,7 @@ export default function ChatScreen() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [detailsMessage, setDetailsMessage] = useState<Message | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const flatListRef = useRef<FlatList<Message>>(null);
   const inputRef = useRef<TextInput>(null);
@@ -60,6 +62,7 @@ export default function ChatScreen() {
       if (useSupabase) {
         loadMessages(conversation.id);
       }
+      markAsRead(conversation.id);
     }
     return () => setActiveConversation(null);
   }, [conversation?.id, useSupabase]);
@@ -167,6 +170,27 @@ export default function ChatScreen() {
   const getSenderName = (senderId: string) => {
     if (senderId === currentUserId) return "You";
     return user?.firstName ?? "User";
+  };
+
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatDetailTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const handleDetails = () => {
+    if (!selectedMessage) return;
+    setDetailsMessage(selectedMessage);
+    setSelectedMessage(null);
   };
 
   if (!user) {
@@ -301,7 +325,7 @@ export default function ChatScreen() {
                       </Text>
                     </View>
                   )}
-                  <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+                  <View style={{ paddingHorizontal: 14, paddingTop: 10, paddingBottom: 6 }}>
                     <Text
                       style={{
                         fontFamily: "WorkSans_400Regular",
@@ -312,6 +336,28 @@ export default function ChatScreen() {
                     >
                       {msg.text}
                     </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        gap: 4,
+                        marginTop: 4,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "WorkSans_400Regular",
+                          fontSize: 11,
+                          color: isMine
+                            ? Colors.onPrimary.container + "99"
+                            : Colors.onSurface.variant + "99",
+                        }}
+                      >
+                        {formatTime(msg.timestamp)}
+                      </Text>
+                      {isMine && <MessageStatus status={msg.status} size={14} />}
+                    </View>
                   </View>
                 </View>
               </Pressable>
@@ -562,6 +608,29 @@ export default function ChatScreen() {
                 </Text>
               </Pressable>
 
+              {/* Details option — only for own messages */}
+              {selectedMessage?.senderId === currentUserId && (
+                <>
+                  <View style={{ height: 0.5, backgroundColor: Colors.outline.variant + "33" }} />
+                  <Pressable
+                    onPress={handleDetails}
+                    style={({ pressed }) => ({
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 12,
+                      paddingHorizontal: 16,
+                      paddingVertical: 14,
+                      backgroundColor: pressed ? Colors.surface.containerHigh : "transparent",
+                    })}
+                  >
+                    <Info size={18} color={Colors.onSurface.DEFAULT} />
+                    <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 15, color: Colors.onSurface.DEFAULT }}>
+                      Details
+                    </Text>
+                  </Pressable>
+                </>
+              )}
+
               {/* Delete option — only for own messages within 2 hours */}
               {canDeleteSelected && (
                 <>
@@ -645,6 +714,130 @@ export default function ChatScreen() {
                 <Ban size={18} color={Colors.error.DEFAULT} />
                 <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 15, color: Colors.error.DEFAULT }}>
                   Block {user?.firstName}
+                </Text>
+              </Pressable>
+            </Pressable>
+          </Pressable>
+        </Modal>
+
+        {/* Message details modal */}
+        <Modal
+          visible={detailsMessage !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setDetailsMessage(null)}
+        >
+          <Pressable
+            style={{ flex: 1, backgroundColor: "#00000044", justifyContent: "center", alignItems: "center" }}
+            onPress={() => setDetailsMessage(null)}
+          >
+            <Pressable
+              style={{
+                backgroundColor: Colors.surface.containerLowest,
+                borderRadius: 16,
+                width: 280,
+                overflow: "hidden",
+                elevation: 8,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 12,
+              }}
+              onPress={() => {}}
+            >
+              {/* Header */}
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 16,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: Colors.outline.variant + "33",
+                }}
+              >
+                <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
+                  Message Details
+                </Text>
+              </View>
+
+              {/* Message preview */}
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 12,
+                  backgroundColor: Colors.surface.containerLow,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "WorkSans_400Regular",
+                    fontSize: 14,
+                    color: Colors.onSurface.variant,
+                  }}
+                  numberOfLines={3}
+                >
+                  {detailsMessage?.text}
+                </Text>
+              </View>
+
+              {/* Status rows */}
+              <View style={{ paddingHorizontal: 20, paddingVertical: 16, gap: 14 }}>
+                {/* Sent */}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <MessageStatus status="sent" size={16} />
+                    <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.onSurface.DEFAULT }}>
+                      Sent
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant }}>
+                    {detailsMessage ? formatDetailTime(detailsMessage.timestamp) : ""}
+                  </Text>
+                </View>
+
+                {/* Delivered */}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <MessageStatus status="delivered" size={16} />
+                    <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.onSurface.DEFAULT }}>
+                      Delivered
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant }}>
+                    {detailsMessage?.deliveredAt
+                      ? formatDetailTime(detailsMessage.deliveredAt)
+                      : "—"}
+                  </Text>
+                </View>
+
+                {/* Read */}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <MessageStatus status="read" size={16} />
+                    <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.onSurface.DEFAULT }}>
+                      Read
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant }}>
+                    {detailsMessage?.readAt
+                      ? formatDetailTime(detailsMessage.readAt)
+                      : "—"}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Close button */}
+              <Pressable
+                onPress={() => setDetailsMessage(null)}
+                style={({ pressed }) => ({
+                  paddingVertical: 14,
+                  alignItems: "center",
+                  borderTopWidth: 0.5,
+                  borderTopColor: Colors.outline.variant + "33",
+                  backgroundColor: pressed ? Colors.surface.containerHigh : "transparent",
+                })}
+              >
+                <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 15, color: Colors.primary.DEFAULT }}>
+                  Close
                 </Text>
               </Pressable>
             </Pressable>

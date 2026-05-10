@@ -16,6 +16,7 @@ import * as Clipboard from "expo-clipboard";
 import EmojiPicker from "rn-emoji-keyboard";
 import { Colors } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
+import { MessageStatus } from "@/components/ui/MessageStatus";
 import { useConnectionStore, useAuthStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
 import type { Message } from "@/types";
@@ -216,7 +217,7 @@ export default function GroupChatScreen() {
                         </Text>
                       </View>
                     )}
-                    <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+                    <View style={{ paddingHorizontal: 14, paddingTop: 10, paddingBottom: 6 }}>
                       <Text
                         style={{
                           fontFamily: "WorkSans_400Regular",
@@ -227,6 +228,28 @@ export default function GroupChatScreen() {
                       >
                         {msg.text}
                       </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                          gap: 4,
+                          marginTop: 4,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "WorkSans_400Regular",
+                            fontSize: 11,
+                            color: isMine
+                              ? Colors.onPrimary.container + "99"
+                              : Colors.onSurface.variant + "99",
+                          }}
+                        >
+                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </Text>
+                        {isMine && <MessageStatus status={msg.status} size={14} />}
+                      </View>
                     </View>
                   </View>
                 </View>

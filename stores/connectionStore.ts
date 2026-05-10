@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Connection, Conversation, Group, Message, UserProfile } from "@/types";
+import type { Connection, Conversation, Group, Message, MessageStatus, UserProfile } from "@/types";
 import { MOCK_CONNECTIONS, MOCK_CONVERSATIONS, MOCK_GROUPS } from "@/services/mockData";
 import { useSettingsStore } from "./settingsStore";
 import { notifyNewMessage, notifyMutualMatch } from "@/services/notifications";
@@ -29,6 +29,10 @@ type ConnectionStore = {
   addRealtimeMessage: (conversationId: string, message: Message) => void;
   /** Remove a message that was soft-deleted via Realtime */
   removeRealtimeMessage: (conversationId: string, messageId: string) => void;
+  /** Update a message's delivery/read status via Realtime */
+  updateMessageStatus: (conversationId: string, messageId: string, status: MessageStatus, deliveredAt?: string | null, readAt?: string | null) => void;
+  /** Mark messages in a conversation as read (called when chat is opened) */
+  markAsRead: (conversationId: string) => void;
   /** Load conversations from Supabase */
   loadConversations: () => Promise<void>;
   /** Get or create a conversation via Supabase */
@@ -205,6 +209,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         text,
         timestamp: new Date().toISOString(),
         read: false,
+        status: "sending",
         ...(replyTo ? { replyTo } : {}),
       };
 
@@ -252,6 +257,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         text,
         timestamp: new Date().toISOString(),
         read: false,
+        status: "read",
         ...(replyTo ? { replyTo } : {}),
       };
 
@@ -288,6 +294,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
               text: replyText,
               timestamp: new Date().toISOString(),
               read: false,
+              status: "sent",
             };
 
             set((state) => ({
@@ -475,6 +482,30 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           : c
       ),
     }));
+  },
+
+  updateMessageStatus: (conversationId, messageId, status, deliveredAt, readAt) => {
+    set((state) => ({
+      conversations: state.conversations.map((c) =>
+        c.id === conversationId
+          ? {
+              ...c,
+              messages: c.messages.map((m) =>
+                m.id === messageId
+                  ? { ...m, status, deliveredAt: deliveredAt ?? m.deliveredAt, readAt: readAt ?? m.readAt, read: status === "read" || m.read }
+                  : m
+              ),
+            }
+          : c
+      ),
+    }));
+  },
+
+  markAsRead: (conversationId) => {
+    const currentUserId = getCurrentUserId();
+    if (!get().useSupabase || currentUserId === "current-user") return;
+    db.markMessagesDelivered(conversationId, currentUserId).catch(() => {});
+    db.markMessagesRead(conversationId, currentUserId).catch(() => {});
   },
 
   createGroup: (name, memberIds) => {

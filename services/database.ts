@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import type { UserProfile, DbMessage, DbConversation, Message } from "@/types";
+import type { UserProfile, DbMessage, DbConversation, Message, MessageStatus } from "@/types";
 
 // ─── Profile operations ──────────────────────────────────────
 
@@ -203,6 +203,12 @@ export async function getOrCreateDirectConversation(
 
 // ─── Message operations ──────────────────────────────────────
 
+function deriveStatus(row: DbMessage): MessageStatus {
+  if (row.read_at) return "read";
+  if (row.delivered_at) return "delivered";
+  return "sent";
+}
+
 /** Convert a Supabase message row into the app's Message type. */
 function toAppMessage(row: DbMessage): Message {
   return {
@@ -211,6 +217,9 @@ function toAppMessage(row: DbMessage): Message {
     text: row.text,
     timestamp: row.created_at,
     read: row.read,
+    status: deriveStatus(row),
+    deliveredAt: row.delivered_at,
+    readAt: row.read_at,
     deletedAt: row.deleted_at,
     ...(row.reply_to_id
       ? {
@@ -282,15 +291,34 @@ export async function deleteMessage(
 }
 
 /**
+ * Mark all messages in a conversation as delivered for a given user.
+ */
+export async function markMessagesDelivered(
+  conversationId: string,
+  userId: string,
+) {
+  const now = new Date().toISOString();
+  const { error } = await supabase
+    .from("messages")
+    .update({ delivered_at: now })
+    .eq("conversation_id", conversationId)
+    .neq("sender_id", userId)
+    .is("delivered_at", null);
+
+  if (error) console.warn("markMessagesDelivered error:", error.message);
+}
+
+/**
  * Mark all messages in a conversation as read for a given user.
  */
 export async function markMessagesRead(
   conversationId: string,
   userId: string,
 ) {
+  const now = new Date().toISOString();
   const { error } = await supabase
     .from("messages")
-    .update({ read: true })
+    .update({ read: true, read_at: now, delivered_at: now })
     .eq("conversation_id", conversationId)
     .neq("sender_id", userId)
     .eq("read", false);

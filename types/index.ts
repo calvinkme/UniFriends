@@ -39,12 +39,17 @@ export type Connection = {
   createdAt: string;
 };
 
+export type MessageStatus = "sending" | "sent" | "delivered" | "read";
+
 export type Message = {
   id: string;
   senderId: string;
   text: string;
   timestamp: string;
   read: boolean;
+  status: MessageStatus;
+  deliveredAt?: string | null;
+  readAt?: string | null;
   deletedAt?: string | null;
   replyTo?: {
     id: string;
@@ -69,6 +74,8 @@ export type DbMessage = {
   sender_id: string;
   text: string;
   read: boolean;
+  delivered_at: string | null;
+  read_at: string | null;
   reply_to_id: string | null;
   reply_to_sender_id: string | null;
   reply_to_text: string | null;
