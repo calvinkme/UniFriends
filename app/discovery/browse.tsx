@@ -14,17 +14,20 @@ function ProfileRow({
   profile,
   connected,
   onConnect,
+  onPress,
 }: {
   profile: ScoredProfile;
   connected: boolean;
   onConnect: () => void;
+  onPress: () => void;
 }) {
   const yearLabel = profile.academicYear === 1 ? "1st Year" : profile.academicYear === 2 ? "2nd Year" : profile.academicYear === 3 ? "3rd Year" : "4th Year";
   const sharedInterests = profile.interests.slice(0, 3);
 
   return (
-    <View
-      style={{
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => ({
         flexDirection: "row",
         alignItems: "center",
         gap: 14,
@@ -34,7 +37,8 @@ function ProfileRow({
         borderRadius: 14,
         borderWidth: 1,
         borderColor: Colors.outline.variant + "33",
-      }}
+        opacity: pressed ? 0.8 : 1,
+      })}
     >
       <Avatar
         uri={profile.avatarUrl}
@@ -53,9 +57,9 @@ function ProfileRow({
         </View>
         <Text
           style={{ fontFamily: "WorkSans_500Medium", fontSize: 13, color: Colors.onSurface.variant, marginBottom: 6 }}
-          numberOfLines={1}
+          numberOfLines={2}
         >
-          {profile.degree}{profile.majors.length > 0 ? ` · ${profile.majors[0]}` : ""}
+          {profile.degree}{profile.majors.length > 0 ? ` · ${profile.majors.join(", ")}` : ""}
         </Text>
         {sharedInterests.length > 0 && (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
@@ -78,7 +82,10 @@ function ProfileRow({
         )}
       </View>
       <Pressable
-        onPress={connected ? undefined : onConnect}
+        onPress={(e) => {
+          e.stopPropagation();
+          if (!connected) onConnect();
+        }}
         disabled={connected}
         style={{
           width: 44,
@@ -96,7 +103,7 @@ function ProfileRow({
           <UserPlus size={20} color={Colors.onPrimary.DEFAULT} />
         )}
       </Pressable>
-    </View>
+    </Pressable>
   );
 }
 
@@ -147,6 +154,7 @@ export default function BrowseScreen() {
               profile={profile}
               connected={connectedIds.includes(profile.id)}
               onConnect={() => acceptProfileById(profile.id)}
+              onPress={() => router.push(`/discovery/profile?id=${profile.id}`)}
             />
           ))}
         </ScrollView>

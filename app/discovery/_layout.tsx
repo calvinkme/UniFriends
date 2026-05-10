@@ -4,6 +4,7 @@ export default function DiscoveryLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="browse" />
+      <Stack.Screen name="profile" />
     </Stack>
   );
 }
