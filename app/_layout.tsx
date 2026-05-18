@@ -18,7 +18,9 @@ import {
 } from "@expo-google-fonts/work-sans";
 import { useEffect, useState, useRef } from "react";
 import { View, ActivityIndicator, Platform } from "react-native";
+import * as Linking from "expo-linking";
 import { Colors } from "@/constants";
+import { supabase } from "@/services/supabase";
 import { useAuthStore, useSettingsStore, useConnectionStore } from "@/stores";
 import { useRealtimeAllMessages } from "@/hooks/useRealtimeMessages";
 import { savePushToken } from "@/services/database";
@@ -43,7 +45,7 @@ export default function RootLayout() {
     WorkSans_600SemiBold,
   });
 
-  const { session, profile, isLoading, initialize } = useAuthStore();
+  const { session, profile, isLoading, isPasswordRecovery, initialize } = useAuthStore();
   const { setPushToken } = useSettingsStore();
   const { loadConversations } = useConnectionStore();
   const [authInitialized, setAuthInitialized] = useState(false);
@@ -52,6 +54,7 @@ export default function RootLayout() {
 
   const notificationListener = useRef<EventSubscription | null>(null);
   const responseListener = useRef<EventSubscription | null>(null);
+  const processedUrl = useRef<string | null>(null);
 
   // Global Realtime listener for messages in non-active conversations
   useRealtimeAllMessages();
@@ -60,6 +63,37 @@ export default function RootLayout() {
   useEffect(() => {
     initialize().then(() => setAuthInitialized(true));
   }, []);
+
+  // Handle deep links for password recovery
+  useEffect(() => {
+    if (!authInitialized) return;
+
+    function handleDeepLink(url: string | null) {
+      if (!url || url === processedUrl.current) return;
+
+      const hashIndex = url.indexOf("#");
+      if (hashIndex === -1) return;
+
+      const params = new URLSearchParams(url.substring(hashIndex + 1));
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+
+      if (accessToken && refreshToken) {
+        processedUrl.current = url;
+        supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+      }
+    }
+
+    Linking.getInitialURL().then(handleDeepLink);
+    const subscription = Linking.addEventListener("url", (event) =>
+      handleDeepLink(event.url),
+    );
+
+    return () => subscription.remove();
+  }, [authInitialized]);
 
   // Load Supabase conversations once authenticated with a profile
   useEffect(() => {
@@ -130,12 +164,14 @@ export default function RootLayout() {
       if (!inOnboardingGroup) {
         setTimeout(() => router.replace("/(onboarding)/name"), 0);
       }
+    } else if (isPasswordRecovery) {
+      setTimeout(() => router.replace("/change-password"), 0);
     } else {
       if (inAuthGroup || inOnboardingGroup) {
         setTimeout(() => router.replace("/(tabs)/main"), 0);
       }
     }
-  }, [session, profile, isLoading, authInitialized, segments]);
+  }, [session, profile, isLoading, authInitialized, segments, isPasswordRecovery]);
 
   if ((!fontsLoaded && !fontError) || !authInitialized) {
     return (

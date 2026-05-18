@@ -7,6 +7,7 @@ import { Colors } from "@/constants";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/services/supabase";
+import { useAuthStore } from "@/stores";
 
 const PASSWORD_RULES = [
   { key: "length", label: "At least 8 characters", test: (pw: string) => pw.length >= 8 },
@@ -39,6 +40,7 @@ function PasswordRule({ label, met }: { label: string; met: boolean }) {
 export default function ChangePasswordScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const isPasswordRecovery = useAuthStore((s) => s.isPasswordRecovery);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmTouched, setConfirmTouched] = useState(false);
@@ -67,6 +69,7 @@ export default function ChangePasswordScreen() {
         password: newPassword,
       });
       if (updateError) throw updateError;
+      useAuthStore.getState().setPasswordRecovery(false);
       setSuccess(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
@@ -131,7 +134,17 @@ export default function ChangePasswordScreen() {
             Your password has been changed successfully.
           </Text>
           <View style={{ width: "100%" }}>
-            <Button label="Back to Settings" onPress={() => router.back()} fullWidth />
+            <Button
+              label={isPasswordRecovery ? "Continue" : "Back to Settings"}
+              onPress={() => {
+                if (isPasswordRecovery) {
+                  router.replace("/(tabs)/main");
+                } else {
+                  router.back();
+                }
+              }}
+              fullWidth
+            />
           </View>
         </View>
       </View>

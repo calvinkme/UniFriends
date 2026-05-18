@@ -7,9 +7,11 @@ type AuthState = {
   session: Session | null;
   profile: UserProfile | null;
   isLoading: boolean;
+  isPasswordRecovery: boolean;
   initialize: () => Promise<void>;
   setSession: (session: Session | null) => void;
   setProfile: (profile: UserProfile | null) => void;
+  setPasswordRecovery: (value: boolean) => void;
   signOut: () => Promise<void>;
 };
 
@@ -17,6 +19,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
   profile: null,
   isLoading: true,
+  isPasswordRecovery: false,
 
   initialize: async () => {
     try {
@@ -61,10 +64,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     // Subscribe to auth changes
-    supabase.auth.onAuthStateChange(async (_event, session) => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
       set({ session });
+      if (event === "PASSWORD_RECOVERY") {
+        set({ isPasswordRecovery: true });
+      }
       if (!session) {
-        set({ profile: null });
+        set({ profile: null, isPasswordRecovery: false });
       }
     });
   },
@@ -73,8 +79,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   setProfile: (profile) => set({ profile }),
 
+  setPasswordRecovery: (value) => set({ isPasswordRecovery: value }),
+
   signOut: async () => {
     await supabase.auth.signOut();
-    set({ session: null, profile: null });
+    set({ session: null, profile: null, isPasswordRecovery: false });
   },
 }));
