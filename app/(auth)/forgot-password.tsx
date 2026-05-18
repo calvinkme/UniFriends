@@ -1,7 +1,7 @@
 import { View, Text, Pressable, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Mail, Check } from "lucide-react-native";
 import { Colors } from "@/constants";
 import { Input } from "@/components/ui/Input";
@@ -18,6 +18,43 @@ export default function ForgotPasswordScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
+  const cooldownInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (cooldownInterval.current) clearInterval(cooldownInterval.current);
+    };
+  }, []);
+
+  const startCooldown = () => {
+    setResendCooldown(60);
+    if (cooldownInterval.current) clearInterval(cooldownInterval.current);
+    cooldownInterval.current = setInterval(() => {
+      setResendCooldown((prev) => {
+        if (prev <= 1) {
+          if (cooldownInterval.current) clearInterval(cooldownInterval.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || isResending) return;
+    setIsResending(true);
+    try {
+      await resetPassword(email.trim());
+      startCooldown();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setError(message);
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const isEmailValid = EMAIL_REGEX.test(email.trim());
 
@@ -38,6 +75,7 @@ export default function ForgotPasswordScreen() {
     try {
       await resetPassword(email.trim());
       setSent(true);
+      startCooldown();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
       setError(message);
@@ -123,7 +161,29 @@ export default function ForgotPasswordScreen() {
             Click the link in the email to reset your password. If you don't see it, check your spam folder.
           </Text>
 
-          <View style={{ marginTop: 32, width: "100%" }}>
+          <Pressable
+            onPress={handleResend}
+            disabled={resendCooldown > 0 || isResending}
+            style={{ marginTop: 24 }}
+            hitSlop={8}
+          >
+            <Text
+              style={{
+                fontFamily: "WorkSans_500Medium",
+                fontSize: 14,
+                color: resendCooldown > 0 ? Colors.onSurface.variant : Colors.primary.DEFAULT,
+                textAlign: "center",
+              }}
+            >
+              {isResending
+                ? "Sending..."
+                : resendCooldown > 0
+                  ? `Resend link in ${resendCooldown}s`
+                  : "Resend link"}
+            </Text>
+          </Pressable>
+
+          <View style={{ marginTop: 24, width: "100%" }}>
             <Button
               label="Back to Sign In"
               onPress={() => router.back()}
