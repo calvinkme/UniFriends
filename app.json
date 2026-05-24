@@ -25,7 +25,10 @@
       },
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "resize",
-      "package": "com.unifriends.app"
+      "package": "com.unifriends.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -49,6 +52,12 @@
           "color": "#7c6f5b"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a034b371-a668-455c-927d-4b8b6d581b63"
+      }
+    }
   }
 }
