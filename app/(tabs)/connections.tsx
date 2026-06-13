@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable, Modal, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Check, Search, X, Plus } from "lucide-react-native";
+import { Check, Search, X, Plus, Sparkles } from "lucide-react-native";
 import { type ReactNode, useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Colors } from "@/constants";
@@ -9,6 +9,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { ConnectionModal } from "@/components/ConnectionModal";
+import { GenerateGroupSheet } from "@/components/GenerateGroupSheet";
 import { useConnectionStore } from "@/stores";
 import type { Connection, UserProfile } from "@/types";
 
@@ -97,12 +98,13 @@ function ConnectionCard({
 export default function ConnectionsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { connections, groups, loadConnections, acceptIncomingConnection, declineIncomingConnection, createGroup } = useConnectionStore();
+  const { connections, groups, loadConnections, acceptIncomingConnection, declineIncomingConnection, createGroup, acceptGroupInvite, declineGroupInvite, getPendingGroupInvites } = useConnectionStore();
   const [activeTab, setActiveTab] = useState<"people" | "groups">("people");
   const [matchedUser, setMatchedUser] = useState<UserProfile | null>(null);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
+  const [showGenerateGroup, setShowGenerateGroup] = useState(false);
 
   const handleAccept = (connection: Connection) => {
     acceptIncomingConnection(connection.user.id);
@@ -336,8 +338,137 @@ export default function ConnectionsScreen() {
       ) : (
         <View style={{ flex: 1 }}>
           <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            {/* Auto-Generate Group Card */}
+            <Pressable
+              onPress={() => setShowGenerateGroup(true)}
+              style={{
+                marginTop: 16,
+                marginBottom: 12,
+                padding: 16,
+                borderRadius: 16,
+                backgroundColor: Colors.primary.fixed,
+                borderWidth: 1,
+                borderColor: Colors.primary.container + "66",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 14,
+              }}
+            >
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: Colors.primary.DEFAULT,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Sparkles size={20} color={Colors.onPrimary.DEFAULT} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
+                  Auto-Generate Group
+                </Text>
+                <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 2 }}>
+                  Find your most compatible group
+                </Text>
+              </View>
+            </Pressable>
+
+            {/* Pending Group Invites */}
+            {getPendingGroupInvites().length > 0 && (
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  style={{
+                    fontFamily: "Manrope_700Bold",
+                    fontSize: 17,
+                    color: Colors.onSurface.DEFAULT,
+                    marginBottom: 12,
+                  }}
+                >
+                  Group Invites
+                </Text>
+                <View className="gap-3">
+                  {getPendingGroupInvites().map((group) => {
+                    const creator = group.members.find((m) => m.status === "accepted");
+                    return (
+                      <View
+                        key={group.id}
+                        style={{
+                          padding: 14,
+                          borderRadius: 12,
+                          backgroundColor: Colors.surface.DEFAULT,
+                          borderWidth: 1,
+                          borderColor: Colors.primary.container + "66",
+                        }}
+                      >
+                        <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
+                          {group.name}
+                        </Text>
+                        {creator && (
+                          <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 2 }}>
+                            Created by {creator.profile.firstName} {creator.profile.lastName}
+                          </Text>
+                        )}
+                        <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 2 }}>
+                          {group.members.length}/{group.maxSize} members
+                        </Text>
+                        <View className="flex-row mt-3 -space-x-2 mb-3">
+                          {group.members.slice(0, 4).map((member, i) => (
+                            <View key={member.profile.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 4 - i }}>
+                              <Avatar uri={member.profile.avatarUrl} name={member.profile.firstName} size="sm" />
+                            </View>
+                          ))}
+                        </View>
+                        <View style={{ flexDirection: "row", gap: 10 }}>
+                          <Pressable
+                            onPress={() => {
+                              acceptGroupInvite(group.id);
+                              router.push(`/chat/group/${group.id}`);
+                            }}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 8,
+                              backgroundColor: Colors.secondary.DEFAULT,
+                              paddingHorizontal: 16,
+                              paddingVertical: 10,
+                              borderRadius: 10,
+                            }}
+                          >
+                            <Check size={18} color="#FFFFFF" />
+                            <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 14, color: "#FFFFFF" }}>
+                              Accept
+                            </Text>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => declineGroupInvite(group.id)}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 8,
+                              backgroundColor: Colors.surface.containerHigh,
+                              paddingHorizontal: 16,
+                              paddingVertical: 10,
+                              borderRadius: 10,
+                            }}
+                          >
+                            <X size={18} color={Colors.onSurface.variant} />
+                            <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 14, color: Colors.onSurface.variant }}>
+                              Decline
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
             {groups.length > 0 ? (
-              <View className="gap-3 mt-4">
+              <View className="gap-3">
                 {groups.map((group) => (
                   <Pressable
                     key={group.id}
@@ -345,18 +476,25 @@ export default function ConnectionsScreen() {
                     style={{ borderWidth: 1, borderColor: Colors.outline.variant + "4D" }}
                     onPress={() => router.push(`/chat/group/${group.id}`)}
                   >
-                    <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
-                      {group.name}
-                    </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                      <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 16, color: Colors.onSurface.DEFAULT, flex: 1 }}>
+                        {group.name}
+                      </Text>
+                      {group.status === "pending" && (
+                        <Badge label="Pending" />
+                      )}
+                    </View>
                     <Text
                       style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onSurface.variant, marginTop: 4 }}
                     >
-                      {group.members.length} members
+                      {group.members.length === group.maxSize
+                        ? `${group.members.length} members`
+                        : `${group.members.length}/${group.maxSize} members`}
                     </Text>
                     <View className="flex-row mt-3 -space-x-2">
                       {group.members.slice(0, 4).map((member, i) => (
-                        <View key={member.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 4 - i }}>
-                          <Avatar uri={member.avatarUrl} name={`${member.firstName}`} size="sm" />
+                        <View key={member.profile.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 4 - i }}>
+                          <Avatar uri={member.profile.avatarUrl} name={member.profile.firstName} size="sm" />
                         </View>
                       ))}
                     </View>
@@ -528,6 +666,14 @@ export default function ConnectionsScreen() {
           }
         }}
         onClose={() => setMatchedUser(null)}
+      />
+
+      <GenerateGroupSheet
+        visible={showGenerateGroup}
+        onClose={() => setShowGenerateGroup(false)}
+        onGroupCreated={(groupId) => {
+          setTimeout(() => router.push(`/chat/group/${groupId}`), 300);
+        }}
       />
     </View>
   );

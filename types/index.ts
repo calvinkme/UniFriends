@@ -102,6 +102,7 @@ export type DbConversationParticipant = {
 export type ScoredProfile = UserProfile & { compatibilityScore: number };
 
 export type FilterState = {
+  university: string | null;
   fieldOfStudy: string | null;
   major: string | null;
   academicYear: number | null;
@@ -109,10 +110,27 @@ export type FilterState = {
   proximityKm: number;
 };
 
+export type GroupMemberStatus = "pending" | "accepted" | "declined";
+
+export type GroupMember = {
+  profile: UserProfile;
+  status: GroupMemberStatus;
+  compatibilityScore?: number;
+  respondedAt?: string;
+};
+
+export type GroupGenerationFilters = {
+  sameUniversity: boolean;
+  sameDegree: boolean;
+  academicYears: (1 | 2 | 3 | 4)[];
+};
+
 export type Group = {
   id: string;
   name: string;
-  members: UserProfile[];
+  members: GroupMember[];
+  maxSize: number;
+  status: "full" | "pending";
   messages: Message[];
   createdAt: string;
 };

@@ -1,10 +1,13 @@
 import { create } from "zustand";
-import type { Connection, Conversation, Group, Message, MessageStatus, UserProfile } from "@/types";
-import { MOCK_CONNECTIONS, MOCK_CONVERSATIONS, MOCK_GROUPS } from "@/services/mockData";
+import type { Connection, Conversation, Group, GroupGenerationFilters, GroupMember, Message, MessageStatus, UserProfile } from "@/types";
+import type { ScoredProfile } from "@/services/matchingAlgorithm";
+import { MOCK_CONNECTIONS, MOCK_CONVERSATIONS, MOCK_GROUPS, MOCK_USERS, CURRENT_USER } from "@/services/mockData";
 import { useSettingsStore } from "./settingsStore";
 import { notifyNewMessage, notifyMutualMatch } from "@/services/notifications";
 import * as db from "@/services/database";
 import { useAuthStore } from "./authStore";
+import { useProfileStore } from "./profileStore";
+import { selectTopCompatibleMembers, generateGroupName } from "@/services/matchingAlgorithm";
 
 type ConnectionStore = {
   connections: Connection[];
@@ -39,6 +42,18 @@ type ConnectionStore = {
   getOrCreateConversationAsync: (otherUserId: string) => Promise<Conversation>;
   /** Create a new group with selected members */
   createGroup: (name: string, memberIds: string[]) => Group;
+  /** Create a group from profile objects (for auto-generated groups) */
+  createGroupFromProfiles: (name: string, members: UserProfile[], options?: { maxSize?: number; scoredMembers?: ScoredProfile[] }) => Group;
+  /** Whether auto-group generation is in progress */
+  isGeneratingGroup: boolean;
+  /** Auto-generate a group of the given size using the compatibility algorithm */
+  generateGroup: (groupSize: number, filters?: GroupGenerationFilters) => Promise<{ group: Group; members: ScoredProfile[] } | null>;
+  /** Accept a group invite */
+  acceptGroupInvite: (groupId: string) => void;
+  /** Decline a group invite */
+  declineGroupInvite: (groupId: string) => void;
+  /** Get groups where current user has a pending invite */
+  getPendingGroupInvites: () => Group[];
   /** Block a user */
   blockUser: (userId: string) => void;
   /** Unblock a user */
@@ -56,6 +71,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   blockedUserIds: [],
   activeConversationId: null,
   useSupabase: false,
+  isGeneratingGroup: false,
 
   loadConnections: () => {
     set((state) => {
@@ -510,23 +526,26 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
   createGroup: (name, memberIds) => {
     const currentUserId = getCurrentUserId();
-    const members: UserProfile[] = [];
-
-    for (const id of memberIds) {
-      const conn = get().connections.find((c) => c.user.id === id);
-      if (conn) members.push(conn.user);
-    }
+    const groupMembers: GroupMember[] = [];
 
     const currentProfile = useAuthStore.getState().profile;
     if (currentProfile) {
-      members.unshift(currentProfile);
+      groupMembers.push({ profile: currentProfile, status: "accepted" });
+    }
+
+    for (const id of memberIds) {
+      const conn = get().connections.find((c) => c.user.id === id);
+      if (conn) groupMembers.push({ profile: conn.user, status: "pending" });
     }
 
     const groupId = `group-${Date.now()}`;
+    const totalSize = groupMembers.length;
     const group: Group = {
       id: groupId,
       name,
-      members,
+      members: groupMembers,
+      maxSize: totalSize,
+      status: "full",
       messages: [],
       createdAt: new Date().toISOString(),
     };
@@ -546,6 +565,198 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     }));
 
     return group;
+  },
+
+  createGroupFromProfiles: (name, members, options) => {
+    const currentUserId = getCurrentUserId();
+    const currentProfile = useAuthStore.getState().profile;
+    const scoreMap = new Map<string, number>();
+    if (options?.scoredMembers) {
+      for (const sm of options.scoredMembers) {
+        scoreMap.set(sm.id, sm.compatibilityScore);
+      }
+    }
+
+    const groupMembers: GroupMember[] = [];
+    if (currentProfile) {
+      groupMembers.push({ profile: currentProfile, status: "accepted" });
+    }
+    for (const m of members) {
+      groupMembers.push({
+        profile: m,
+        status: "pending",
+        compatibilityScore: scoreMap.get(m.id),
+      });
+    }
+
+    const maxSize = options?.maxSize ?? groupMembers.length;
+    const groupId = `group-${Date.now()}`;
+    const group: Group = {
+      id: groupId,
+      name,
+      members: groupMembers,
+      maxSize,
+      status: groupMembers.length >= maxSize ? "full" : "pending",
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    const groupConvo: Conversation = {
+      id: `convo-group-${groupId}`,
+      participantIds: [currentUserId, ...members.map((m) => m.id)],
+      isGroup: true,
+      groupName: name,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    set((state) => ({
+      groups: [group, ...state.groups],
+      conversations: [...state.conversations, groupConvo],
+    }));
+
+    return group;
+  },
+
+  generateGroup: async (groupSize, filters) => {
+    set({ isGeneratingGroup: true });
+    try {
+      const currentUser = useProfileStore.getState().currentUser ?? CURRENT_USER;
+      const currentUserId = getCurrentUserId();
+      const blockedIds = get().blockedUserIds;
+
+      let blockedSet = new Set(blockedIds);
+      try {
+        if (currentUserId !== "current-user") {
+          const serverBlocked = await db.getBlockedUsers(currentUserId);
+          for (const id of serverBlocked) blockedSet.add(id);
+        }
+      } catch {
+        // Use local blocked list only
+      }
+
+      const excludeIds = new Set([currentUserId, ...blockedSet]);
+      let candidates: UserProfile[] = [];
+
+      try {
+        if (currentUserId !== "current-user") {
+          const rows = await db.getDiscoverableProfiles({ excludeIds: [...excludeIds] });
+          if (rows && rows.length > 0) {
+            candidates = rows.map((row: Record<string, unknown>) => ({
+              id: row.id as string,
+              firstName: row.first_name as string,
+              lastName: row.last_name as string,
+              email: (row.email as string) ?? undefined,
+              avatarUrl: (row.avatar_url as string) ?? "",
+              university: row.university as string,
+              degree: row.degree as string,
+              majors: (row.majors as string[]) ?? [],
+              age: (row.age as number) ?? 0,
+              academicYear: row.academic_year as 1 | 2 | 3 | 4,
+              gpaRanking: row.gpa_ranking as string | undefined,
+              activeCourses: (row.active_courses as string[]) ?? [],
+              bio: (row.bio as string) ?? "",
+              interests: (row.interests as string[]) ?? [],
+              isVerified: (row.is_verified as boolean) ?? false,
+              isOnline: false,
+              createdAt: row.created_at as string,
+            }));
+          }
+        }
+      } catch {
+        // Fall through to mock data
+      }
+
+      const seenIds = new Set(candidates.map((u) => u.id));
+      for (const mockUser of MOCK_USERS) {
+        if (!excludeIds.has(mockUser.id) && !seenIds.has(mockUser.id)) {
+          candidates.push(mockUser);
+        }
+      }
+
+      if (filters) {
+        if (filters.sameUniversity) {
+          candidates = candidates.filter(
+            (c) => c.university.toLowerCase() === currentUser.university.toLowerCase(),
+          );
+        }
+        if (filters.sameDegree) {
+          candidates = candidates.filter(
+            (c) => c.degree.toLowerCase() === currentUser.degree.toLowerCase(),
+          );
+        }
+        if (filters.academicYears.length > 0) {
+          const yearSet = new Set(filters.academicYears);
+          candidates = candidates.filter((c) => yearSet.has(c.academicYear));
+        }
+      }
+
+      const needed = groupSize - 1;
+      const topMembers = selectTopCompatibleMembers(currentUser, candidates, needed);
+
+      if (topMembers.length === 0) {
+        return null;
+      }
+
+      const existingNames = get().groups.map((g) => g.name);
+      const name = generateGroupName(currentUser, topMembers, existingNames);
+
+      const group = get().createGroupFromProfiles(name, topMembers, {
+        maxSize: groupSize,
+        scoredMembers: topMembers,
+      });
+      return { group, members: topMembers };
+    } finally {
+      set({ isGeneratingGroup: false });
+    }
+  },
+
+  acceptGroupInvite: (groupId) => {
+    const currentUserId = getCurrentUserId();
+    set((state) => ({
+      groups: state.groups.map((g) =>
+        g.id === groupId
+          ? {
+              ...g,
+              members: g.members.map((m) =>
+                m.profile.id === currentUserId
+                  ? { ...m, status: "accepted" as const, respondedAt: new Date().toISOString() }
+                  : m,
+              ),
+            }
+          : g,
+      ),
+    }));
+  },
+
+  declineGroupInvite: (groupId) => {
+    const currentUserId = getCurrentUserId();
+    set((state) => ({
+      groups: state.groups.map((g) =>
+        g.id === groupId
+          ? {
+              ...g,
+              members: g.members.map((m) =>
+                m.profile.id === currentUserId
+                  ? { ...m, status: "declined" as const, respondedAt: new Date().toISOString() }
+                  : m,
+              ),
+            }
+          : g,
+      ),
+      conversations: state.conversations.map((c) =>
+        c.id === `convo-group-${groupId}`
+          ? { ...c, participantIds: c.participantIds.filter((id) => id !== currentUserId) }
+          : c,
+      ),
+    }));
+  },
+
+  getPendingGroupInvites: () => {
+    const currentUserId = getCurrentUserId();
+    return get().groups.filter((g) =>
+      g.members.some((m) => m.profile.id === currentUserId && m.status === "pending"),
+    );
   },
 
   blockUser: (userId) => {

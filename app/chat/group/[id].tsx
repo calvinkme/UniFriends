@@ -40,13 +40,13 @@ export default function GroupChatScreen() {
 
   const getMemberName = (senderId: string): string => {
     if (senderId === currentUserId) return "You";
-    const member = group?.members.find((m) => m.id === senderId);
-    return member?.firstName ?? "Member";
+    const member = group?.members.find((m) => m.profile.id === senderId);
+    return member?.profile.firstName ?? "Member";
   };
 
   const getMemberAvatar = (senderId: string) => {
-    const member = group?.members.find((m) => m.id === senderId);
-    return { uri: member?.avatarUrl ?? "", name: member ? `${member.firstName} ${member.lastName}` : "" };
+    const member = group?.members.find((m) => m.profile.id === senderId);
+    return { uri: member?.profile.avatarUrl ?? "", name: member ? `${member.profile.firstName} ${member.profile.lastName}` : "" };
   };
 
   const handleSend = () => {
@@ -135,14 +135,16 @@ export default function GroupChatScreen() {
               {group.name}
             </Text>
             <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 12, color: Colors.onSurface.variant }}>
-              {group.members.length} members
+              {group.status === "pending"
+                ? `${group.members.length}/${group.maxSize} members`
+                : `${group.members.length} members`}
             </Text>
           </View>
           {/* Member avatars stack */}
           <View style={{ flexDirection: "row" }}>
             {group.members.slice(0, 3).map((m, i) => (
-              <View key={m.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 3 - i }}>
-                <Avatar uri={m.avatarUrl} name={`${m.firstName}`} size="xs" />
+              <View key={m.profile.id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 3 - i }}>
+                <Avatar uri={m.profile.avatarUrl} name={m.profile.firstName} size="xs" />
               </View>
             ))}
           </View>
