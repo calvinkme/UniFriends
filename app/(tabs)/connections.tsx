@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable, Modal, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Check, Search, X, Plus, Sparkles } from "lucide-react-native";
+import { Check, X, Plus, Sparkles } from "lucide-react-native";
 import { type ReactNode, useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Colors } from "@/constants";
@@ -19,12 +19,13 @@ function ConnectionCard({
   footer,
 }: {
   connection: Connection;
-  onPress: () => void;
+  onPress?: () => void;
   footer?: ReactNode;
 }) {
   return (
     <Pressable
       onPress={onPress}
+      disabled={!onPress}
       style={{
         padding: 14,
         borderRadius: 12,
@@ -149,9 +150,6 @@ export default function ConnectionsScreen() {
         >
           Connections
         </Text>
-        <Pressable className="w-10 h-10 items-center justify-center rounded-lg bg-secondary-container">
-          <Search size={20} color={Colors.secondary.DEFAULT} />
-        </Pressable>
       </View>
 
       {/* Segmented Control */}
@@ -194,11 +192,6 @@ export default function ConnectionsScreen() {
                 <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 17, color: Colors.onSurface.DEFAULT }}>
                   Recent Connections
                 </Text>
-                <Pressable>
-                  <Text style={{ fontFamily: "WorkSans_600SemiBold", fontSize: 14, color: Colors.primary.container }}>
-                    See all
-                  </Text>
-                </Pressable>
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 20 }}>
                 {acceptedConnections.map((conn) => (
@@ -245,7 +238,6 @@ export default function ConnectionsScreen() {
                     <ConnectionCard
                       key={conn.id}
                       connection={conn}
-                      onPress={() => {}}
                       footer={
                         <View style={{ flexDirection: "row", gap: 10 }}>
                           <Pressable
@@ -307,30 +299,62 @@ export default function ConnectionsScreen() {
                     <ConnectionCard
                       key={conn.id}
                       connection={conn}
-                      onPress={() => {}}
                     />
                   ))}
                 </View>
               </View>
             )}
 
-            <Text
-              style={{
-                fontFamily: "Manrope_700Bold", fontSize: 17,
-                color: Colors.onSurface.DEFAULT, marginBottom: 16,
-              }}
-            >
-              Members
-            </Text>
-            <View className="gap-3">
-              {acceptedConnections.map((conn) => (
-                <ConnectionCard
-                  key={conn.id}
-                  connection={conn}
-                  onPress={() => router.push(`/chat/${conn.user.id}`)}
-                />
-              ))}
-            </View>
+            {acceptedConnections.length > 0 && (
+              <>
+                <Text
+                  style={{
+                    fontFamily: "Manrope_700Bold", fontSize: 17,
+                    color: Colors.onSurface.DEFAULT, marginBottom: 16,
+                  }}
+                >
+                  Members
+                </Text>
+                <View className="gap-3">
+                  {acceptedConnections.map((conn) => (
+                    <ConnectionCard
+                      key={conn.id}
+                      connection={conn}
+                      onPress={() => router.push(`/chat/${conn.user.id}`)}
+                    />
+                  ))}
+                </View>
+              </>
+            )}
+
+            {acceptedConnections.length === 0 &&
+              incomingConnections.length === 0 &&
+              pendingConnections.length === 0 && (
+                <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 80, paddingHorizontal: 32 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Manrope_700Bold",
+                      fontSize: 18,
+                      color: Colors.onSurface.DEFAULT,
+                      textAlign: "center",
+                      marginBottom: 8,
+                    }}
+                  >
+                    No connections yet
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: "WorkSans_400Regular",
+                      fontSize: 15,
+                      lineHeight: 22,
+                      color: Colors.onSurface.variant,
+                      textAlign: "center",
+                    }}
+                  >
+                    Head to the For You tab to discover students and send your first connection request.
+                  </Text>
+                </View>
+              )}
           </View>
 
           <View style={{ height: 100 }} />

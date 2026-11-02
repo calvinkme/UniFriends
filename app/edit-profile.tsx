@@ -148,18 +148,19 @@ export default function EditProfileScreen() {
 
     setIsSaving(true);
     try {
+      const { sanitizeText } = await import("@/services/sanitize");
       await updateProfile({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+        firstName: sanitizeText(firstName, 50),
+        lastName: sanitizeText(lastName, 50),
         avatarUrl,
-        university,
-        degree,
-        majors,
+        university: sanitizeText(university, 100),
+        degree: sanitizeText(degree, 100),
+        majors: majors.map((m) => sanitizeText(m, 100)),
         age: parsedAge,
         academicYear,
-        bio: bio.trim(),
-        interests,
-        activeCourses: coursesList,
+        bio: sanitizeText(bio, 300),
+        interests: interests.map((i) => sanitizeText(i, 50)),
+        activeCourses: coursesList.map((c) => sanitizeText(c, 100)),
         gpaRanking: gpaRanking.trim() || undefined,
       });
       router.back();

@@ -1,3 +1,5 @@
+import { UNIVERSITIES_DATA } from "@/constants/degrees";
+
 type HipolabsUniversity = {
   name: string;
   country: string;
@@ -5,6 +7,15 @@ type HipolabsUniversity = {
   web_pages: string[];
   alpha_two_code: string;
 };
+
+// Universities that have full degree/major data in the app.
+const IN_SYSTEM_NAMES = Object.keys(UNIVERSITIES_DATA);
+const IN_SYSTEM_LOWER = new Set(IN_SYSTEM_NAMES.map((n) => n.toLowerCase()));
+
+/** True if the university has curated degree/major data in the app. */
+export function isInSystemUniversity(name: string): boolean {
+  return IN_SYSTEM_LOWER.has(name.trim().toLowerCase());
+}
 
 const COUNTRY_MAP: Record<string, string> = {
   AU: "australia",
@@ -95,7 +106,7 @@ async function fetchCountryUniversities(countryCode: string): Promise<HipolabsUn
     const timeout = setTimeout(() => controller.abort(), 5000);
 
     const response = await fetch(
-      `http://universities.hipolabs.com/search?country=${encodeURIComponent(countryName)}`,
+      `https://universities.hipolabs.com/search?country=${encodeURIComponent(countryName)}`,
       { signal: controller.signal }
     );
     clearTimeout(timeout);
@@ -121,23 +132,40 @@ async function fetchCountryUniversities(countryCode: string): Promise<HipolabsUn
 export async function searchUniversities(query: string): Promise<string[]> {
   if (query.length < 2) return [];
 
-  // Search Australian and UK universities in parallel
-  const [auUniversities, ukUniversities] = await Promise.all([
+  // Search Australian, UK, and US universities in parallel
+  const [auUniversities, ukUniversities, usUniversities] = await Promise.all([
     fetchCountryUniversities("AU"),
     fetchCountryUniversities("UK"),
+    fetchCountryUniversities("US"),
   ]);
 
-  const combined = [...auUniversities, ...ukUniversities];
   const lowerQuery = query.toLowerCase();
+
+  // Start with in-system universities so they can always be found by name,
+  // even if the external API names them differently or omits them.
+  const combined = [
+    ...IN_SYSTEM_NAMES.map((name) => ({ name })),
+    ...auUniversities,
+    ...ukUniversities,
+    ...usUniversities,
+  ];
 
   // Deduplicate by lowercase name and filter by query
   const seen = new Set<string>();
-  return combined
-    .filter((u) => {
-      const lower = u.name.toLowerCase();
-      if (seen.has(lower)) return false;
-      seen.add(lower);
-      return lower.includes(lowerQuery);
+  const matches = combined.filter((u) => {
+    const lower = u.name.toLowerCase();
+    if (seen.has(lower)) return false;
+    seen.add(lower);
+    return lower.includes(lowerQuery);
+  });
+
+  // Prioritise universities that have curated degree/major data in the app
+  return matches
+    .sort((a, b) => {
+      const aIn = isInSystemUniversity(a.name) ? 0 : 1;
+      const bIn = isInSystemUniversity(b.name) ? 0 : 1;
+      if (aIn !== bIn) return aIn - bIn;
+      return a.name.localeCompare(b.name);
     })
     .map((u) => u.name)
     .slice(0, 20);

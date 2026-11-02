@@ -3045,6 +3045,1228 @@ export const UNIVERSITIES_DATA: Record<string, DegreeMajor[]> = {
 
   // ─── UK Universities ───────────────────────────────────────────────
 
+  // ─── Additional Australian Universities ─────────────────────────────
+
+  "University of Wollongong": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biological Sciences",
+        "Cell and Molecular Biology",
+        "Chemistry",
+        "Ecology and Conservation Biology",
+        "Environmental Science",
+        "Geology",
+        "Marine Science",
+        "Medical and Health Sciences",
+        "Nutrition Science",
+        "Physics",
+        "Psychology",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Computer Engineering",
+        "Electrical Engineering",
+        "Environmental Engineering",
+        "Materials Engineering",
+        "Mechanical Engineering",
+        "Mechatronic Engineering",
+        "Mining Engineering",
+        "Telecommunications Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Computer Science",
+      majors: [
+        "Artificial Intelligence and Big Data",
+        "Cyber Security",
+        "Digital Systems Security",
+        "Game and Mobile Development",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Business Analytics",
+        "Business Information Systems",
+        "Cyber Security",
+        "Network Design and Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accountancy",
+        "Business Analytics",
+        "Economics",
+        "Finance",
+        "Human Resource Management",
+        "International Business",
+        "Management",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accountancy",
+        "Economics",
+        "Finance",
+        "Financial Planning",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Community, Culture and Environment",
+        "Creative Writing",
+        "English Literatures",
+        "Geography",
+        "Global Communications",
+        "History",
+        "Indigenous Studies",
+        "International Relations",
+        "Philosophy",
+        "Politics",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Communication and Media",
+      majors: [
+        "Digital and Social Media",
+        "Global Screen Media",
+        "Journalism",
+        "Marketing Communication and Advertising",
+        "Public Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Exercise Science and Rehabilitation",
+    },
+    {
+      degree: "Bachelor of Medical and Health Sciences",
+    },
+    {
+      degree: "Bachelor of Mathematics",
+      majors: [
+        "Applied Statistics",
+        "Financial Mathematics",
+        "Mathematics",
+        "Operations Research",
+      ],
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Education (The Early Years)",
+    },
+    {
+      degree: "Bachelor of Primary Education",
+    },
+    {
+      degree: "Bachelor of Social Work (Honours)",
+    },
+  ],
+
+  "Queensland University of Technology": [
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accountancy",
+        "Advertising",
+        "Business Analytics",
+        "Economics",
+        "Finance",
+        "Human Resource Management",
+        "International Business",
+        "Management",
+        "Marketing",
+        "Public Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Business Process Management",
+        "Computer Science",
+        "Cyber Security",
+        "Data Science",
+        "Information Systems",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Games and Interactive Environments",
+      majors: [
+        "Animation",
+        "Game Design",
+        "Software Technologies",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Computer and Software Systems Engineering",
+        "Electrical and Aerospace Engineering",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+        "Mechatronics Engineering",
+        "Medical Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biological Sciences",
+        "Chemistry",
+        "Earth Science",
+        "Environmental Science",
+        "Mathematics",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Mathematics",
+      majors: [
+        "Applied and Computational Mathematics",
+        "Data Science",
+        "Statistics",
+      ],
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Architecture",
+        "Fashion",
+        "Industrial Design",
+        "Interaction Design",
+        "Interior Design",
+        "Landscape Architecture",
+      ],
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Acting",
+        "Animation",
+        "Creative Writing",
+        "Dance",
+        "Drama",
+        "Film, Screen and New Media",
+        "Music",
+        "Visual Arts",
+      ],
+    },
+    {
+      degree: "Bachelor of Communication",
+      majors: [
+        "Advertising",
+        "Digital Media",
+        "Entertainment",
+        "Journalism",
+        "Media and Communication",
+        "Public Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Health Science",
+      majors: [
+        "Health and Wellbeing",
+        "Human Services",
+        "Public Health",
+      ],
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Sport and Exercise Science",
+    },
+    {
+      degree: "Bachelor of Biomedical Science",
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Justice",
+      majors: [
+        "Criminology",
+        "Policy and Politics",
+        "Social Justice",
+      ],
+    },
+    {
+      degree: "Bachelor of Education",
+      majors: [
+        "Early Childhood",
+        "Primary",
+        "Secondary",
+      ],
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+  ],
+
+  "Deakin University": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Anthropology",
+        "Australian Studies",
+        "Criminology",
+        "Digital Media",
+        "History",
+        "International Relations",
+        "Journalism",
+        "Literary Studies",
+        "Philosophy",
+        "Politics and Policy Studies",
+        "Psychology",
+        "Public Relations",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accounting",
+        "Business Analytics",
+        "Economics",
+        "Finance",
+        "Financial Planning",
+        "Human Resource Management",
+        "International Trade",
+        "Management",
+        "Marketing",
+        "Sport Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Application Development",
+        "Cyber Security",
+        "Data Science",
+        "Game Design",
+        "Information Systems",
+        "Robotics",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Electrical and Electronics Engineering",
+        "Mechanical Engineering",
+        "Mechatronics Engineering",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biological Sciences",
+        "Cell Biology and Genetics",
+        "Chemistry",
+        "Environmental Science",
+        "Mathematical Modelling",
+        "Physics",
+        "Zoology and Animal Science",
+      ],
+    },
+    {
+      degree: "Bachelor of Health Sciences",
+      majors: [
+        "Disability and Inclusion",
+        "Family, Society and Health",
+        "Food Studies",
+        "Health Promotion",
+        "Medical Biotechnology",
+        "Physical Activity and Health",
+      ],
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Exercise and Sport Science",
+    },
+    {
+      degree: "Bachelor of Nutrition Science",
+    },
+    {
+      degree: "Bachelor of Psychological Science",
+    },
+    {
+      degree: "Bachelor of Criminology",
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Digital Design",
+        "Graphic Design",
+        "Photography",
+        "Product Design",
+      ],
+    },
+    {
+      degree: "Bachelor of Communication",
+      majors: [
+        "Advertising",
+        "Digital Media",
+        "Journalism",
+        "Public Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Education",
+      majors: [
+        "Early Childhood",
+        "Primary",
+        "Secondary",
+      ],
+    },
+    {
+      degree: "Bachelor of Construction Management (Honours)",
+    },
+  ],
+
+  "University of Newcastle": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biology",
+        "Chemistry",
+        "Earth Sciences",
+        "Environmental Science and Management",
+        "Genetics",
+        "Marine Science",
+        "Mathematics",
+        "Physics",
+        "Psychology",
+        "Statistics",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Aerospace Systems Engineering",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Computer Systems Engineering",
+        "Electrical and Electronic Engineering",
+        "Environmental Engineering",
+        "Mechanical Engineering",
+        "Mechatronics Engineering",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Cyber Security",
+        "Data Analytics",
+        "Software Development",
+        "Systems and Networks",
+      ],
+    },
+    {
+      degree: "Bachelor of Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Cyber Security",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accounting",
+        "Business Analytics",
+        "Finance",
+        "Human Resource Management",
+        "International Business",
+        "Management",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accounting",
+        "Economics",
+        "Finance",
+        "Financial Planning",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Ancient History",
+        "Aboriginal Studies",
+        "Creative and Professional Writing",
+        "English",
+        "Film, Media and Cultural Studies",
+        "Geography and Environmental Studies",
+        "History",
+        "Linguistics",
+        "Philosophy",
+        "Sociology and Anthropology",
+      ],
+    },
+    {
+      degree: "Bachelor of Psychological Science",
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Midwifery",
+    },
+    {
+      degree: "Bachelor of Medical Science",
+    },
+    {
+      degree: "Bachelor of Biotechnology",
+    },
+    {
+      degree: "Bachelor of Food Science and Human Nutrition (Honours)",
+    },
+    {
+      degree: "Bachelor of Oral Health Therapy",
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Social Work (Honours)",
+    },
+    {
+      degree: "Bachelor of Development Studies (Honours)",
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+    {
+      degree: "Bachelor of Teaching (Secondary)",
+    },
+    {
+      degree: "Bachelor of Construction Management (Building) (Honours)",
+    },
+    {
+      degree: "Bachelor of Design (Architecture)",
+    },
+  ],
+
+  "Griffith University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biomolecular Science",
+        "Chemistry",
+        "Ecology and Wildlife Conservation",
+        "Environmental Science",
+        "Marine Biology",
+        "Mathematics",
+        "Physics",
+        "Physiology and Pharmacology",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Electronic and Computer Engineering",
+        "Mechanical Engineering",
+        "Mechatronic Engineering",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Cyber Security",
+        "Data Analytics",
+        "Mobile Application Development",
+        "Networks and Security",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Contemporary Marketing",
+        "Human Resource Management",
+        "Innovation and Entrepreneurship",
+        "International Business",
+        "Logistics and Supply Chain Management",
+        "Management",
+        "Marketing",
+        "Sport Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accounting",
+        "Economics",
+        "Finance",
+        "Financial Planning",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Criminal Justice",
+        "Drama",
+        "History",
+        "Languages",
+        "Literary Studies",
+        "Politics",
+        "Screen Studies",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Criminology and Criminal Justice",
+    },
+    {
+      degree: "Bachelor of Cyber Security",
+    },
+    {
+      degree: "Bachelor of Psychological Science",
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Exercise Science",
+    },
+    {
+      degree: "Bachelor of Public Health",
+    },
+    {
+      degree: "Bachelor of Medical Science",
+    },
+    {
+      degree: "Bachelor of Environmental Science",
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Government and International Relations",
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Product Design",
+        "User Experience Design",
+        "Visual Communication Design",
+      ],
+    },
+    {
+      degree: "Bachelor of Film and Screen Media Production",
+    },
+    {
+      degree: "Bachelor of Music",
+      majors: [
+        "Composition",
+        "Music Technology",
+        "Performance",
+      ],
+    },
+    {
+      degree: "Bachelor of Aviation",
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+  ],
+
+  "Western Sydney University": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Criminology",
+        "Cultural and Social Analysis",
+        "English",
+        "Geography and Urban Studies",
+        "History and Political Thought",
+        "Human Geography",
+        "International Relations",
+        "Philosophy",
+        "Psychological Studies",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Astrophysics",
+        "Conservation Biology",
+        "Environmental Health",
+        "Food Science and Nutrition",
+        "Forensic Science",
+        "Mathematics",
+        "Plant Science and Horticulture",
+        "Wildlife Management",
+        "Zoology",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accounting",
+        "Applied Finance",
+        "Economics",
+        "Human Resource Management",
+        "International Business",
+        "Management",
+        "Marketing",
+        "Sport Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Information and Communications Technology",
+      majors: [
+        "Cyber Security and Networking",
+        "Mobile Applications Development",
+        "Web and Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Data Science",
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+        "Mechatronic Engineering",
+        "Robotics and Mechatronics",
+      ],
+    },
+    {
+      degree: "Bachelor of Construction Management",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Midwifery",
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+    {
+      degree: "Bachelor of Health Science",
+      majors: [
+        "Health Promotion",
+        "Health Services Management",
+        "Public Health",
+      ],
+    },
+    {
+      degree: "Bachelor of Medical Science",
+    },
+    {
+      degree: "Bachelor of Communication",
+      majors: [
+        "Digital and Social Media",
+        "Journalism",
+        "Public Relations and Advertising",
+      ],
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Visual Communication",
+        "Interior Design",
+      ],
+    },
+    {
+      degree: "Bachelor of Laws",
+    },
+    {
+      degree: "Bachelor of Social Work",
+    },
+    {
+      degree: "Bachelor of Policing",
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+    {
+      degree: "Bachelor of Education (Secondary)",
+    },
+  ],
+
+  "University of South Australia": [
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accounting",
+        "Economics, Finance and Trade",
+        "Human Resource Management",
+        "Management",
+        "Marketing",
+        "Property",
+        "Sport and Recreation Management",
+        "Tourism and Event Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accounting",
+        "Finance",
+        "Financial Planning",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Cyber Security",
+        "Networking",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Software Engineering (Honours)",
+    },
+    {
+      degree: "Bachelor of Data Analytics",
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Civil and Structural Engineering",
+        "Electrical and Mechatronic Engineering",
+        "Mechanical Engineering",
+        "Mechanical and Advanced Manufacturing",
+      ],
+    },
+    {
+      degree: "Bachelor of Aviation",
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biology",
+        "Chemistry",
+        "Environmental Science",
+        "Geospatial Science",
+        "Mathematics",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Midwifery",
+    },
+    {
+      degree: "Bachelor of Pharmacy (Honours)",
+    },
+    {
+      degree: "Bachelor of Psychology (Honours)",
+    },
+    {
+      degree: "Bachelor of Physiotherapy (Honours)",
+    },
+    {
+      degree: "Bachelor of Occupational Therapy (Honours)",
+    },
+    {
+      degree: "Bachelor of Laws (Honours)",
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Criminology and Criminal Justice",
+        "Cultural Studies",
+        "Human Geography and Sociology",
+        "Languages",
+        "Politics and International Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Communication Design",
+        "Interior Architecture",
+        "Product Design",
+      ],
+    },
+    {
+      degree: "Bachelor of Architectural Studies",
+    },
+    {
+      degree: "Bachelor of Contemporary Art",
+    },
+    {
+      degree: "Bachelor of Media Arts",
+    },
+    {
+      degree: "Bachelor of Education (Primary and Middle)",
+    },
+    {
+      degree: "Bachelor of Social Work",
+    },
+  ],
+
+  "Curtin University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Applied Geology",
+        "Biology",
+        "Chemistry",
+        "Data Science",
+        "Environmental Biology",
+        "Mathematics and Statistics",
+        "Molecular Genetics and Biotechnology",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Chemical Engineering",
+        "Civil and Construction Engineering",
+        "Electrical and Electronic Engineering",
+        "Mechanical Engineering",
+        "Mechatronic Engineering",
+        "Mining Engineering",
+        "Petroleum Engineering",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Commerce",
+      majors: [
+        "Accounting",
+        "Banking",
+        "Business Law",
+        "Economics",
+        "Finance",
+        "Management",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Computing",
+      majors: [
+        "Computer Science",
+        "Cyber Security",
+        "Data Management",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Creative Writing",
+        "Digital and Social Media",
+        "Professional Writing and Publishing",
+        "Screen Arts",
+      ],
+    },
+    {
+      degree: "Bachelor of Psychology",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Pharmacy (Honours)",
+    },
+    {
+      degree: "Bachelor of Physiotherapy",
+    },
+    {
+      degree: "Bachelor of Health Sciences",
+      majors: [
+        "Health Promotion",
+        "Public Health",
+      ],
+    },
+    {
+      degree: "Bachelor of Laws",
+    },
+    {
+      degree: "Bachelor of Design",
+      majors: [
+        "Communication Design",
+        "Fashion",
+        "Graphic Design",
+        "Interior Architecture",
+      ],
+    },
+    {
+      degree: "Bachelor of Applied Science (Architectural Science)",
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+    {
+      degree: "Bachelor of Social Work",
+    },
+    {
+      degree: "Bachelor of Agribusiness",
+    },
+  ],
+
+  "La Trobe University": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Archaeology",
+        "Creative and Professional Writing",
+        "English",
+        "History",
+        "International Relations",
+        "Legal Studies",
+        "Linguistics",
+        "Philosophy",
+        "Politics",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biological Sciences",
+        "Chemistry",
+        "Ecology",
+        "Genetics",
+        "Mathematics",
+        "Microbiology",
+        "Physics",
+        "Zoology",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accounting",
+        "Economics",
+        "Event Management",
+        "Finance",
+        "Human Resource Management",
+        "Management",
+        "Marketing",
+        "Sport Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Information Technology",
+      majors: [
+        "Cloud Computing",
+        "Cybersecurity",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Cybersecurity",
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Electronic Engineering",
+        "Industrial Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Biomedicine",
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Midwifery",
+    },
+    {
+      degree: "Bachelor of Psychological Science",
+    },
+    {
+      degree: "Bachelor of Health Sciences",
+      majors: [
+        "Health Promotion",
+        "Public Health",
+      ],
+    },
+    {
+      degree: "Bachelor of Physiotherapy (Honours)",
+    },
+    {
+      degree: "Bachelor of Oral Health Science",
+    },
+    {
+      degree: "Bachelor of Laws",
+    },
+    {
+      degree: "Bachelor of Criminology",
+    },
+    {
+      degree: "Bachelor of Media and Communication",
+      majors: [
+        "Journalism",
+        "Media Industries",
+        "Public Relations",
+      ],
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+    {
+      degree: "Bachelor of Social Work",
+    },
+    {
+      degree: "Bachelor of Agricultural Sciences",
+    },
+  ],
+
+  "University of Tasmania": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Aboriginal Studies",
+        "Criminology and Corrections",
+        "English",
+        "Geography and Environment",
+        "History",
+        "Philosophy",
+        "Politics and International Relations",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biological Sciences",
+        "Chemistry",
+        "Geology",
+        "Mathematics and Physics",
+        "Microbiology",
+        "Plant Science",
+        "Zoology and Animal Science",
+      ],
+    },
+    {
+      degree: "Bachelor of Marine and Antarctic Science",
+      majors: [
+        "Fisheries and Aquaculture",
+        "Marine Biology",
+        "Ocean and Antarctic Science",
+      ],
+    },
+    {
+      degree: "Bachelor of Business",
+      majors: [
+        "Accounting",
+        "Economics",
+        "Finance",
+        "Human Resource Management",
+        "Management",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "Bachelor of Information and Communication Technology",
+      majors: [
+        "Cybersecurity",
+        "Games and Creative Technology",
+        "Software Development",
+      ],
+    },
+    {
+      degree: "Bachelor of Engineering (Honours)",
+      majors: [
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Maritime Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Nursing",
+    },
+    {
+      degree: "Bachelor of Psychological Science",
+    },
+    {
+      degree: "Bachelor of Health Science",
+    },
+    {
+      degree: "Bachelor of Medical Research",
+    },
+    {
+      degree: "Bachelor of Pharmacy (Honours)",
+    },
+    {
+      degree: "Bachelor of Laws",
+    },
+    {
+      degree: "Bachelor of Education (Primary)",
+    },
+    {
+      degree: "Bachelor of Social Work",
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+    },
+    {
+      degree: "Bachelor of Music",
+    },
+    {
+      degree: "Bachelor of Economics",
+    },
+    {
+      degree: "Bachelor of Surveying and Spatial Sciences",
+    },
+    {
+      degree: "Bachelor of Agricultural Science",
+    },
+  ],
+
   "University of Oxford": [
     {
       degree: "BA in Jurisprudence",
@@ -3561,6 +4783,1781 @@ export const UNIVERSITIES_DATA: Record<string, DegreeMajor[]> = {
     },
     {
       degree: "BSc Environmental Policy with Economics",
+    },
+  ],
+
+  // ─── Additional UK Universities ─────────────────────────────────────
+
+  "University of Edinburgh": [
+    {
+      degree: "BSc Computer Science",
+    },
+    {
+      degree: "BSc Artificial Intelligence",
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Mechanical Engineering",
+        "Structural Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+      majors: [
+        "Mathematics",
+        "Mathematics and Statistics",
+        "Applied Mathematics",
+      ],
+    },
+    {
+      degree: "BSc Physics and Astronomy",
+      majors: [
+        "Astrophysics",
+        "Computational Physics",
+        "Mathematical Physics",
+        "Theoretical Physics",
+      ],
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+      majors: [
+        "Biochemistry",
+        "Ecology",
+        "Genetics",
+        "Immunology",
+        "Molecular Biology",
+        "Zoology",
+      ],
+    },
+    {
+      degree: "BSc Biomedical Sciences",
+    },
+    {
+      degree: "MA Economics",
+    },
+    {
+      degree: "MA Business",
+    },
+    {
+      degree: "MA English Literature",
+    },
+    {
+      degree: "MA History",
+    },
+    {
+      degree: "MA Philosophy",
+    },
+    {
+      degree: "MA Politics and International Relations",
+    },
+    {
+      degree: "MA Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BArch Architecture",
+    },
+    {
+      degree: "BA Design",
+    },
+    {
+      degree: "MA Geography",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BVM&S Veterinary Medicine",
+    },
+    {
+      degree: "MA Linguistics",
+    },
+  ],
+
+  "University of Manchester": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Human-Computer Interaction",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Aerospace Engineering",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+      majors: [
+        "Mathematics",
+        "Mathematics and Statistics",
+        "Mathematics with Finance",
+      ],
+    },
+    {
+      degree: "BSc Physics",
+      majors: [
+        "Physics",
+        "Physics with Astrophysics",
+        "Theoretical Physics",
+      ],
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+      majors: [
+        "Biochemistry",
+        "Biotechnology",
+        "Genetics",
+        "Microbiology",
+        "Molecular Biology",
+        "Neuroscience",
+        "Zoology",
+      ],
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Management",
+      majors: [
+        "Human Resources",
+        "Innovation, Strategy and Entrepreneurship",
+        "International Business Economics",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "BA English Literature",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA Politics",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Italian",
+        "Japanese",
+        "Chinese",
+        "Spanish",
+        "Russian",
+      ],
+    },
+    {
+      degree: "BA Architecture",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "MPharm Pharmacy",
+    },
+    {
+      degree: "BNurs Nursing",
+    },
+    {
+      degree: "BSc Earth and Environmental Sciences",
+    },
+  ],
+
+  "King's College London": [
+    {
+      degree: "BSc Computer Science",
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Biomedical Engineering",
+        "Electronic Engineering",
+        "General Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+      majors: [
+        "Mathematics",
+        "Mathematics with Management and Finance",
+        "Mathematics and Philosophy",
+      ],
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Neuroscience",
+    },
+    {
+      degree: "BSc Biomedical Science",
+    },
+    {
+      degree: "BSc Nutrition",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Business Management",
+    },
+    {
+      degree: "BA English",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA War Studies",
+    },
+    {
+      degree: "BA International Relations",
+    },
+    {
+      degree: "BSc Political Economy",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Liberal Arts",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Spanish",
+        "Portuguese",
+      ],
+    },
+    {
+      degree: "MBBS Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "MPharm Pharmacy",
+    },
+    {
+      degree: "BSc Nursing",
+    },
+    {
+      degree: "BSc Midwifery",
+    },
+    {
+      degree: "BSc Physiotherapy",
+    },
+  ],
+
+  "University of Warwick": [
+    {
+      degree: "BSc Computer Science",
+    },
+    {
+      degree: "BSc Data Science",
+    },
+    {
+      degree: "BSc Cyber Security",
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Automotive Engineering",
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Mechanical Engineering",
+        "Systems Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc MORSE (Mathematics, Operational Research, Statistics and Economics)",
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Management",
+    },
+    {
+      degree: "BA English Literature",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA Philosophy, Politics and Economics",
+    },
+    {
+      degree: "BA Politics and International Studies",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Liberal Arts",
+    },
+    {
+      degree: "BA Modern Languages and Cultures",
+      majors: [
+        "French",
+        "German",
+        "Italian",
+        "Spanish",
+      ],
+    },
+    {
+      degree: "BA Film and Television Studies",
+    },
+    {
+      degree: "BA Sociology",
+    },
+    {
+      degree: "BASc Global Sustainable Development",
+    },
+  ],
+
+  "University of Bristol": [
+    {
+      degree: "BSc Computer Science",
+    },
+    {
+      degree: "BSc Artificial Intelligence",
+    },
+    {
+      degree: "MEng Engineering",
+      majors: [
+        "Aerospace Engineering",
+        "Civil Engineering",
+        "Design Engineering",
+        "Electrical and Electronic Engineering",
+        "Engineering Mathematics",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics",
+      majors: [
+        "Physics",
+        "Physics with Astrophysics",
+        "Theoretical Physics",
+      ],
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Biomedical Sciences",
+    },
+    {
+      degree: "BSc Neuroscience",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Business and Management",
+    },
+    {
+      degree: "BA English",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BSc Politics and International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Liberal Arts",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Italian",
+        "Spanish",
+        "Russian",
+        "Portuguese",
+      ],
+    },
+    {
+      degree: "BSc Geography",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "BVSc Veterinary Science",
+    },
+    {
+      degree: "BSc Economics and Accounting",
+    },
+  ],
+
+  "University of Leeds": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Cyber Security",
+        "Data Science",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Aeronautical and Aerospace Engineering",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Electronic and Electrical Engineering",
+        "Mechanical Engineering",
+        "Mechatronics and Robotics",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Biomedical Sciences",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Business Management",
+    },
+    {
+      degree: "BA English",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Spanish",
+        "Chinese",
+      ],
+    },
+    {
+      degree: "BSc Geography",
+    },
+    {
+      degree: "BA Fine Art",
+    },
+    {
+      degree: "BA Music",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BChD Dentistry",
+    },
+    {
+      degree: "BA Design",
+    },
+  ],
+
+  "Coventry University": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Cyber Security",
+        "Data Science",
+      ],
+    },
+    {
+      degree: "BSc Ethical Hacking and Cybersecurity",
+    },
+    {
+      degree: "BEng Mechanical Engineering",
+    },
+    {
+      degree: "BEng Aerospace Engineering",
+    },
+    {
+      degree: "BEng Automotive Engineering",
+    },
+    {
+      degree: "BEng Motorsport Engineering",
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BA Accounting and Finance",
+    },
+    {
+      degree: "BA Business Management",
+    },
+    {
+      degree: "BA Economics",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BSc Nursing (Adult)",
+    },
+    {
+      degree: "BSc Midwifery",
+    },
+    {
+      degree: "BSc Sport and Exercise Science",
+    },
+    {
+      degree: "BA Media Production",
+    },
+    {
+      degree: "BA Journalism",
+    },
+    {
+      degree: "BA Graphic Design",
+    },
+    {
+      degree: "BSc Games Technology",
+    },
+    {
+      degree: "BA Architecture",
+    },
+    {
+      degree: "BA Sociology and Criminology",
+    },
+    {
+      degree: "BA International Relations",
+    },
+  ],
+
+  "University of Birmingham": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence and Machine Learning",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Electronic and Electrical Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Biomedical Science",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Business Management",
+    },
+    {
+      degree: "BA English Literature",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA Political Science",
+    },
+    {
+      degree: "BA International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BSc Geography",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Spanish",
+        "Italian",
+      ],
+    },
+    {
+      degree: "BMus Music",
+    },
+    {
+      degree: "BSc Sport and Exercise Sciences",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "BNurs Nursing",
+    },
+  ],
+
+  "University of Nottingham": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Data Science",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Aerospace Engineering",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biology",
+    },
+    {
+      degree: "BSc Biomedical Sciences",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Finance, Accounting and Management",
+    },
+    {
+      degree: "BSc Management",
+    },
+    {
+      degree: "BA English",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BA Politics and International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Geography",
+    },
+    {
+      degree: "BA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Spanish",
+        "Russian",
+      ],
+    },
+    {
+      degree: "BMus Music",
+    },
+    {
+      degree: "BArch Architecture",
+    },
+    {
+      degree: "MBBS Medicine",
+    },
+    {
+      degree: "BVMedSci Veterinary Medicine and Science",
+    },
+    {
+      degree: "MPharm Pharmacy",
+    },
+    {
+      degree: "BSc Nursing",
+    },
+  ],
+
+  "University of Glasgow": [
+    {
+      degree: "BSc Computing Science",
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Aerospace Engineering",
+        "Civil Engineering",
+        "Electronics and Electrical Engineering",
+        "Mechanical Engineering",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics and Astronomy",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Life Sciences",
+      majors: [
+        "Biochemistry",
+        "Genetics",
+        "Immunology",
+        "Microbiology",
+        "Molecular Biology",
+        "Neuroscience",
+      ],
+    },
+    {
+      degree: "MA Economics",
+    },
+    {
+      degree: "BAcc Accountancy",
+    },
+    {
+      degree: "MA Business and Management",
+    },
+    {
+      degree: "MA English Literature",
+    },
+    {
+      degree: "MA History",
+    },
+    {
+      degree: "MA Philosophy",
+    },
+    {
+      degree: "MA Politics",
+    },
+    {
+      degree: "MA International Relations",
+    },
+    {
+      degree: "MA Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "MA Geography",
+    },
+    {
+      degree: "MA Modern Languages",
+      majors: [
+        "French",
+        "German",
+        "Spanish",
+        "Russian",
+      ],
+    },
+    {
+      degree: "BMus Music",
+    },
+    {
+      degree: "MBChB Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "BVMS Veterinary Medicine and Surgery",
+    },
+    {
+      degree: "BN Nursing",
+    },
+  ],
+
+  "Queen Mary University of London": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Games Development",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Biomedical Engineering",
+        "Electronic Engineering",
+        "Materials Science and Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Biomedical Sciences",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Management",
+    },
+    {
+      degree: "BSc Business Management",
+    },
+    {
+      degree: "BA English",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Film Studies",
+    },
+    {
+      degree: "BA Politics",
+    },
+    {
+      degree: "BA International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BA Geography",
+    },
+    {
+      degree: "BA Drama",
+    },
+    {
+      degree: "BA Comparative Literature",
+    },
+    {
+      degree: "MBBS Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "BSc Global Health",
+    },
+  ],
+
+  "Cardiff University": [
+    {
+      degree: "BSc Computer Science",
+      majors: [
+        "Artificial Intelligence",
+        "Cyber Security",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "BEng Engineering",
+      majors: [
+        "Civil Engineering",
+        "Electrical and Electronic Engineering",
+        "Integrated Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "BSc Mathematics",
+    },
+    {
+      degree: "BSc Physics and Astronomy",
+    },
+    {
+      degree: "BSc Chemistry",
+    },
+    {
+      degree: "BSc Biological Sciences",
+    },
+    {
+      degree: "BSc Biomedical Science",
+    },
+    {
+      degree: "BSc Economics",
+    },
+    {
+      degree: "BSc Accounting and Finance",
+    },
+    {
+      degree: "BSc Business Management",
+    },
+    {
+      degree: "BA English Literature",
+    },
+    {
+      degree: "BA History",
+    },
+    {
+      degree: "BA Philosophy",
+    },
+    {
+      degree: "BSc Politics and International Relations",
+    },
+    {
+      degree: "BSc Psychology",
+    },
+    {
+      degree: "LLB Law",
+    },
+    {
+      degree: "BSc Geography",
+    },
+    {
+      degree: "BA Journalism, Media and Culture",
+    },
+    {
+      degree: "BSc Architecture",
+    },
+    {
+      degree: "BMus Music",
+    },
+    {
+      degree: "MBBCh Medicine",
+    },
+    {
+      degree: "BDS Dentistry",
+    },
+    {
+      degree: "MPharm Pharmacy",
+    },
+    {
+      degree: "BSc Nursing",
+    },
+  ],
+
+  // ─── United States Universities ─────────────────────────────────────
+
+  "Massachusetts Institute of Technology": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Anthropology",
+        "Architecture",
+        "Artificial Intelligence and Decision Making",
+        "Biological Engineering",
+        "Biology",
+        "Brain and Cognitive Sciences",
+        "Business Analytics",
+        "Chemical Engineering",
+        "Chemistry",
+        "Civil and Environmental Engineering",
+        "Comparative Media Studies",
+        "Computer Science and Engineering",
+        "Computer Science and Molecular Biology",
+        "Computer Science, Economics, and Data Science",
+        "Earth, Atmospheric, and Planetary Sciences",
+        "Economics",
+        "Electrical Engineering and Computer Science",
+        "Finance",
+        "Linguistics and Philosophy",
+        "Management",
+        "Materials Science and Engineering",
+        "Mathematics",
+        "Mathematics with Computer Science",
+        "Mechanical Engineering",
+        "Music",
+        "Nuclear Science and Engineering",
+        "Physics",
+        "Political Science",
+        "Urban Studies and Planning",
+        "Writing",
+      ],
+    },
+  ],
+
+  "Stanford University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aeronautics and Astronautics",
+        "Bioengineering",
+        "Biology",
+        "Chemical Engineering",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Science",
+        "Earth Systems",
+        "Electrical Engineering",
+        "Environmental Systems Engineering",
+        "Geophysics",
+        "Human Biology",
+        "Materials Science and Engineering",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Physics",
+        "Statistics",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Anthropology",
+        "Art History",
+        "Classics",
+        "Communication",
+        "Comparative Literature",
+        "East Asian Studies",
+        "Economics",
+        "English",
+        "History",
+        "International Relations",
+        "Linguistics",
+        "Music",
+        "Philosophy",
+        "Political Science",
+        "Psychology",
+        "Public Policy",
+        "Religious Studies",
+        "Sociology",
+        "Theater and Performance Studies",
+        "Urban Studies",
+      ],
+    },
+  ],
+
+  "Harvard University": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "African and African American Studies",
+        "Anthropology",
+        "Applied Mathematics",
+        "Art, Film, and Visual Studies",
+        "Astrophysics",
+        "Bioengineering",
+        "Biomedical Engineering",
+        "Chemistry",
+        "Classics",
+        "Comparative Literature",
+        "Computer Science",
+        "Earth and Planetary Sciences",
+        "Economics",
+        "Electrical Engineering",
+        "English",
+        "Environmental Science and Engineering",
+        "Government",
+        "History",
+        "History of Art and Architecture",
+        "Human Developmental and Regenerative Biology",
+        "Linguistics",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Molecular and Cellular Biology",
+        "Music",
+        "Neuroscience",
+        "Philosophy",
+        "Physics",
+        "Psychology",
+        "Religion",
+        "Sociology",
+        "Statistics",
+        "Theater, Dance, and Media",
+      ],
+    },
+  ],
+
+  "University of California, Berkeley": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Bioengineering",
+        "Chemical Engineering",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Science",
+        "Electrical Engineering and Computer Sciences",
+        "Environmental Engineering Science",
+        "Industrial Engineering and Operations Research",
+        "Materials Science and Engineering",
+        "Mechanical Engineering",
+        "Nuclear Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Anthropology",
+        "Architecture",
+        "Art History",
+        "Astrophysics",
+        "Biology",
+        "Cognitive Science",
+        "Comparative Literature",
+        "Economics",
+        "English",
+        "Environmental Science",
+        "Ethnic Studies",
+        "Film",
+        "Geography",
+        "History",
+        "Legal Studies",
+        "Linguistics",
+        "Mathematics",
+        "Molecular and Cell Biology",
+        "Philosophy",
+        "Physics",
+        "Political Science",
+        "Psychology",
+        "Public Health",
+        "Sociology",
+        "Statistics",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business Administration",
+    },
+  ],
+
+  "University of California, Los Angeles": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Bioengineering",
+        "Biology",
+        "Chemical Engineering",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science",
+        "Electrical Engineering",
+        "Environmental Science",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Microbiology, Immunology and Molecular Genetics",
+        "Neuroscience",
+        "Physics",
+        "Physiological Science",
+        "Statistics and Data Science",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "African American Studies",
+        "Anthropology",
+        "Art History",
+        "Asian Studies",
+        "Communication",
+        "Comparative Literature",
+        "Economics",
+        "English",
+        "Film and Television",
+        "Geography",
+        "History",
+        "International Development Studies",
+        "Linguistics",
+        "Musicology",
+        "Philosophy",
+        "Political Science",
+        "Psychology",
+        "Sociology",
+        "Spanish",
+        "World Arts and Cultures",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts in Business Economics",
+    },
+  ],
+
+  "Arizona State University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Biological Sciences",
+        "Biomedical Sciences",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Science",
+        "Electrical Engineering",
+        "Environmental Science",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Physics",
+        "Psychology",
+        "Software Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business",
+      majors: [
+        "Accountancy",
+        "Business Analytics",
+        "Finance",
+        "Management",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communication",
+        "Economics",
+        "English",
+        "Film and Media Studies",
+        "Global Studies",
+        "History",
+        "Philosophy",
+        "Political Science",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Art",
+        "Dance",
+        "Music",
+        "Theatre",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Nursing",
+    },
+  ],
+
+  "New York University": [
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Computer Science",
+        "Economics",
+        "English",
+        "History",
+        "Journalism",
+        "Mathematics",
+        "Media, Culture, and Communication",
+        "Neural Science",
+        "Philosophy",
+        "Politics",
+        "Psychology",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business",
+      majors: [
+        "Accounting",
+        "Finance",
+        "Management",
+        "Marketing",
+        "Business Analytics",
+      ],
+    },
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Biology",
+        "Chemistry",
+        "Data Science",
+        "Nursing",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Dance",
+        "Drama",
+        "Film and Television",
+        "Game Design",
+        "Photography and Imaging",
+      ],
+    },
+    {
+      degree: "Bachelor of Music",
+    },
+  ],
+
+  "University of Southern California": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Biomedical Engineering",
+        "Business Administration",
+        "Civil Engineering",
+        "Computer Science",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communication",
+        "Economics",
+        "English",
+        "History",
+        "International Relations",
+        "Political Science",
+        "Psychology",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Acting",
+        "Animation and Digital Arts",
+        "Film and Television Production",
+        "Fine Arts",
+      ],
+    },
+    {
+      degree: "Bachelor of Architecture",
+    },
+    {
+      degree: "Bachelor of Music",
+      majors: [
+        "Composition",
+        "Jazz Studies",
+        "Performance",
+      ],
+    },
+    {
+      degree: "Bachelor of Journalism",
+    },
+  ],
+
+  "University of Texas at Austin": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Biology",
+        "Biomedical Engineering",
+        "Chemical Engineering",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science",
+        "Electrical and Computer Engineering",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Neuroscience",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Business Administration",
+      majors: [
+        "Accounting",
+        "Finance",
+        "Management",
+        "Management Information Systems",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Economics",
+        "English",
+        "Government",
+        "History",
+        "International Relations and Global Studies",
+        "Philosophy",
+        "Psychology",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Radio-Television-Film",
+    },
+    {
+      degree: "Bachelor of Journalism",
+    },
+    {
+      degree: "Bachelor of Architecture",
+    },
+  ],
+
+  "Pennsylvania State University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Biology",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Sciences",
+        "Electrical Engineering",
+        "Industrial Engineering",
+        "Kinesiology",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Meteorology and Atmospheric Science",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business",
+      majors: [
+        "Accounting",
+        "Finance",
+        "Management",
+        "Management Information Systems",
+        "Marketing",
+        "Supply Chain and Information Systems",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communications",
+        "Economics",
+        "English",
+        "History",
+        "Political Science",
+        "Psychology",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Nursing",
+    },
+    {
+      degree: "Bachelor of Architecture",
+    },
+  ],
+
+  "University of Central Florida": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Biology",
+        "Biomedical Sciences",
+        "Civil Engineering",
+        "Computer Science",
+        "Electrical Engineering",
+        "Health Sciences",
+        "Information Technology",
+        "Mechanical Engineering",
+        "Nursing",
+        "Physics",
+        "Psychology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business Administration",
+      majors: [
+        "Accounting",
+        "Economics",
+        "Finance",
+        "Integrated Business",
+        "Management",
+        "Marketing",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communication and Conflict",
+        "Digital Media",
+        "English",
+        "History",
+        "Political Science",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Hospitality Management",
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Film",
+        "Theatre",
+        "Visual Arts and Emerging Media",
+      ],
+    },
+  ],
+
+  "Northeastern University": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Behavioral Neuroscience",
+        "Bioengineering",
+        "Biology",
+        "Chemical Engineering",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Science",
+        "Electrical Engineering",
+        "Health Science",
+        "Industrial Engineering",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Physics",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business Administration",
+      majors: [
+        "Accounting",
+        "Entrepreneurship",
+        "Finance",
+        "Management",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communication Studies",
+        "Economics",
+        "English",
+        "History",
+        "International Affairs",
+        "Media and Screen Studies",
+        "Political Science",
+        "Psychology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Nursing",
+    },
+    {
+      degree: "Bachelor of Science in Architecture",
+    },
+  ],
+
+  "University of Illinois Urbana-Champaign": [
+    {
+      degree: "Bachelor of Science",
+      majors: [
+        "Aerospace Engineering",
+        "Bioengineering",
+        "Biology",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science",
+        "Data Science",
+        "Electrical Engineering",
+        "Industrial Engineering",
+        "Materials Science and Engineering",
+        "Mathematics",
+        "Mechanical Engineering",
+        "Physics",
+        "Statistics",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Business",
+      majors: [
+        "Accountancy",
+        "Finance",
+        "Information Systems",
+        "Management",
+        "Marketing",
+        "Supply Chain Management",
+      ],
+    },
+    {
+      degree: "Bachelor of Arts",
+      majors: [
+        "Communication",
+        "Economics",
+        "English",
+        "History",
+        "Political Science",
+        "Psychology",
+        "Sociology",
+      ],
+    },
+    {
+      degree: "Bachelor of Science in Agricultural Sciences",
+    },
+    {
+      degree: "Bachelor of Fine Arts",
+      majors: [
+        "Art and Design",
+        "Music",
+        "Theatre",
+      ],
     },
   ],
 };

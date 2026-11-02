@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: "bold",
+    fontFamily: "WorkSans_600SemiBold",
     color: Colors.onSurface.variant,
     textTransform: "uppercase",
     letterSpacing: 0.5,

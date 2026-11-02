@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Eye,
   HelpCircle,
-  Palette,
   FileText,
   Shield,
   Trash2,
@@ -187,17 +186,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Appearance */}
-        <SettingsSection label="Appearance">
-          <SettingsToggle
-            icon={<Palette size={20} color={Colors.onSurface.variant} />}
-            label="Dark mode"
-            subtitle="Coming soon"
-            value={settings.darkMode}
-            onToggle={() => settings.toggleSetting("darkMode")}
-          />
-        </SettingsSection>
-
         {/* Support */}
         <SettingsSection label="Support">
           <SettingsLink
@@ -208,7 +196,7 @@ export default function SettingsScreen() {
           <SettingsLink
             icon={<Flag size={20} color={Colors.onSurface.variant} />}
             label="Report a Problem"
-            onPress={() => Alert.alert("Report", "Report feature coming soon.")}
+            onPress={() => Linking.openURL("mailto:support@unifriends.app?subject=Report%20a%20Problem")}
           />
           <SettingsLink
             icon={<MessageCircle size={20} color={Colors.onSurface.variant} />}

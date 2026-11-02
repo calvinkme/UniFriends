@@ -34,9 +34,17 @@ yarn-error.*
 .env
 .env*.local
 
+# Firebase config (contains API keys)
+google-services.json
+GoogleService-Info.plist
+
 # typescript
 *.tsbuildinfo
 
 # generated native folders
 /ios
 /android
+
+# scratch notes and local tooling
+login.txt
+supabase/.temp/

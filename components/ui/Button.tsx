@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "Manrope_700Bold",
   },
 });
 

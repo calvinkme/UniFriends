@@ -8,6 +8,7 @@ import * as db from "@/services/database";
 import { useAuthStore } from "./authStore";
 import { useProfileStore } from "./profileStore";
 import { selectTopCompatibleMembers, generateGroupName } from "@/services/matchingAlgorithm";
+import { USE_MOCK_DATA } from "@/constants/config";
 
 type ConnectionStore = {
   connections: Connection[];
@@ -64,6 +65,43 @@ function getCurrentUserId(): string {
   return useAuthStore.getState().session?.user?.id ?? "current-user";
 }
 
+/** Map a Supabase profile row into the app's UserProfile shape. */
+function mapProfileRow(row: Record<string, unknown>): UserProfile {
+  return {
+    id: row.id as string,
+    firstName: row.first_name as string,
+    lastName: row.last_name as string,
+    email: row.email as string | undefined,
+    avatarUrl: (row.avatar_url as string) ?? "",
+    university: row.university as string,
+    degree: row.degree as string,
+    majors: (row.majors as string[]) ?? [],
+    age: (row.age as number) ?? 0,
+    academicYear: row.academic_year as 1 | 2 | 3 | 4,
+    gpaRanking: row.gpa_ranking as string | undefined,
+    activeCourses: (row.active_courses as string[]) ?? [],
+    bio: (row.bio as string) ?? "",
+    interests: (row.interests as string[]) ?? [],
+    isVerified: (row.is_verified as boolean) ?? false,
+    isOnline: false,
+    createdAt: row.created_at as string,
+  };
+}
+
+/** Map a Supabase connections row (with joined profile) into a Connection. */
+function mapConnectionRow(row: Record<string, unknown>): Connection {
+  const profile = mapProfileRow(row.profiles as Record<string, unknown>);
+  return {
+    id: row.id as string,
+    user: profile,
+    status: "accepted",
+    direction: "matched",
+    compatibilityScore: 0,
+    unread: false,
+    createdAt: row.created_at as string,
+  };
+}
+
 export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   connections: [],
   conversations: [],
@@ -74,21 +112,38 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   isGeneratingGroup: false,
 
   loadConnections: () => {
-    set((state) => {
-      const userCreatedConnections = state.connections.filter((conn) => {
-        const isMock = MOCK_CONNECTIONS.some((mc) => mc.id === conn.id);
-        return !isMock;
+    if (USE_MOCK_DATA) {
+      set((state) => {
+        const userCreatedConnections = state.connections.filter((conn) => {
+          const isMock = MOCK_CONNECTIONS.some((mc) => mc.id === conn.id);
+          return !isMock;
+        });
+
+        const userConnectedUserIds = new Set(userCreatedConnections.map((c) => c.user.id));
+        const filteredMock = MOCK_CONNECTIONS.filter((mc) => !userConnectedUserIds.has(mc.user.id));
+
+        return {
+          connections: [...filteredMock, ...userCreatedConnections],
+          conversations: state.conversations.length > 0 ? state.conversations : MOCK_CONVERSATIONS,
+          groups: MOCK_GROUPS,
+        };
       });
+      return;
+    }
 
-      const userConnectedUserIds = new Set(userCreatedConnections.map((c) => c.user.id));
-      const filteredMock = MOCK_CONNECTIONS.filter((mc) => !userConnectedUserIds.has(mc.user.id));
-
-      return {
-        connections: [...filteredMock, ...userCreatedConnections],
-        conversations: state.conversations.length > 0 ? state.conversations : MOCK_CONVERSATIONS,
-        groups: MOCK_GROUPS,
-      };
-    });
+    // Production: load accepted connections from Supabase.
+    const currentUserId = getCurrentUserId();
+    if (currentUserId === "current-user") return;
+    db.getConnections(currentUserId)
+      .then((rows) => {
+        const connections = (rows ?? []).map((row) =>
+          mapConnectionRow(row as Record<string, unknown>),
+        );
+        set({ connections });
+      })
+      .catch((err) => {
+        if (__DEV__) console.warn("Failed to load connections from Supabase:", err);
+      });
   },
 
   addPendingConnection: (user, compatibilityScore) => {
@@ -255,7 +310,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           }));
         })
         .catch((err) => {
-          console.error("Failed to send message:", err);
+          if (__DEV__) console.error("Failed to send message:", err);
           // Remove optimistic message on failure
           set((state) => ({
             conversations: state.conversations.map((convo) =>
@@ -285,8 +340,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         ),
       }));
 
-      // Simulate a reply (mock mode only)
-      const convo = get().conversations.find((c) => c.id === conversationId);
+      // Simulate a reply (mock mode only) — never runs in production.
+      const convo = USE_MOCK_DATA ? get().conversations.find((c) => c.id === conversationId) : undefined;
       if (convo && !convo.isGroup) {
         const otherUserId = convo.participantIds.find((pid) => pid !== currentUserId);
         const connection = get().connections.find((c) => c.user.id === otherUserId);
@@ -352,7 +407,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     // If using Supabase, also soft-delete on the server
     if (get().useSupabase) {
       db.deleteMessage(messageId, currentUserId).catch((err) => {
-        console.error("Failed to delete message on server:", err);
+        if (__DEV__) console.error("Failed to delete message on server:", err);
       });
     }
 
@@ -435,7 +490,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
       set({ conversations, useSupabase: true });
     } catch (err) {
-      console.warn("Failed to load conversations from Supabase, using mock data:", err);
+      if (__DEV__) console.warn("Failed to load conversations from Supabase, using mock data:", err);
       // Fall back to mock data
     }
   },
@@ -451,7 +506,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         ),
       }));
     } catch (err) {
-      console.error("Failed to load messages:", err);
+      if (__DEV__) console.error("Failed to load messages:", err);
     }
   },
 
@@ -462,9 +517,26 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       const convo = state.conversations.find((c) => c.id === conversationId);
       if (!convo) return state;
 
-      // Don't add duplicate messages (e.g. our own optimistic message)
-      const alreadyExists = convo.messages.some((m) => m.id === message.id);
-      if (alreadyExists) return state;
+      // Already have this exact (real) message — nothing to do.
+      if (convo.messages.some((m) => m.id === message.id)) return state;
+
+      // If our own message arrives via Realtime, reconcile it with the optimistic
+      // placeholder (id "pending-...") instead of appending a duplicate. This is
+      // the case where Realtime beats the sendMessage() promise resolution.
+      if (message.senderId === currentUserId) {
+        const pendingIdx = convo.messages.findIndex(
+          (m) => m.id.startsWith("pending-") && m.text === message.text,
+        );
+        if (pendingIdx !== -1) {
+          return {
+            conversations: state.conversations.map((c) =>
+              c.id === conversationId
+                ? { ...c, messages: c.messages.map((m, i) => (i === pendingIdx ? message : m)) }
+                : c,
+            ),
+          };
+        }
+      }
 
       return {
         conversations: state.conversations.map((c) =>
@@ -475,8 +547,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       };
     });
 
-    // Fire notification for messages from others
-    if (message.senderId !== currentUserId) {
+    // Fire notification for messages from others — but not for the chat the
+    // user is currently viewing (that conversation is already on screen).
+    if (message.senderId !== currentUserId && conversationId !== get().activeConversationId) {
       const settings = useSettingsStore.getState();
       if (settings.notifyMessages) {
         const connection = get().connections.find((c) =>
@@ -621,7 +694,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   generateGroup: async (groupSize, filters) => {
     set({ isGeneratingGroup: true });
     try {
-      const currentUser = useProfileStore.getState().currentUser ?? CURRENT_USER;
+      const currentUser = useProfileStore.getState().currentUser ?? (USE_MOCK_DATA ? CURRENT_USER : null);
+      if (!currentUser) return null;
       const currentUserId = getCurrentUserId();
       const blockedIds = get().blockedUserIds;
 
@@ -667,10 +741,12 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         // Fall through to mock data
       }
 
-      const seenIds = new Set(candidates.map((u) => u.id));
-      for (const mockUser of MOCK_USERS) {
-        if (!excludeIds.has(mockUser.id) && !seenIds.has(mockUser.id)) {
-          candidates.push(mockUser);
+      if (USE_MOCK_DATA) {
+        const seenIds = new Set(candidates.map((u) => u.id));
+        for (const mockUser of MOCK_USERS) {
+          if (!excludeIds.has(mockUser.id) && !seenIds.has(mockUser.id)) {
+            candidates.push(mockUser);
+          }
         }
       }
 

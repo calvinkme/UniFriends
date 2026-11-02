@@ -6,7 +6,7 @@ import { Mail } from "lucide-react-native";
 import { Image } from "expo-image";
 import { Colors } from "@/constants";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { signInWithGoogle, signInWithFacebook } from "@/services/auth";
+import { signInWithGoogle } from "@/services/auth";
 import { useAuthStore } from "@/stores";
 
 export default function LoginScreen() {
@@ -15,15 +15,10 @@ export default function LoginScreen() {
   const { initialize } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOAuth = async (provider: "google" | "facebook") => {
+  const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      if (provider === "google") {
-        await signInWithGoogle();
-      } else {
-        await signInWithFacebook();
-      }
-      // Re-initialize to pick up the new session
+      await signInWithGoogle();
       await initialize();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Please try again.";
@@ -84,7 +79,7 @@ export default function LoginScreen() {
         )}
 
         <Pressable
-          onPress={() => handleOAuth("google")}
+          onPress={handleGoogleSignIn}
           disabled={isLoading}
           className="h-14 rounded-xl flex-row items-center justify-center gap-3 bg-surface-container-lowest active:scale-[0.98]"
           style={{
@@ -102,28 +97,6 @@ export default function LoginScreen() {
             }}
           >
             Continue with Google
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => handleOAuth("facebook")}
-          disabled={isLoading}
-          className="h-14 rounded-xl flex-row items-center justify-center gap-3 bg-surface-container-lowest active:scale-[0.98]"
-          style={{
-            borderWidth: 1,
-            borderColor: Colors.outline.variant + "66",
-            opacity: isLoading ? 0.5 : 1,
-          }}
-        >
-          <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: "#1877F2" }}>f</Text>
-          <Text
-            style={{
-              fontFamily: "WorkSans_600SemiBold",
-              fontSize: 15,
-              color: Colors.onSurface.DEFAULT,
-            }}
-          >
-            Continue with Facebook
           </Text>
         </Pressable>
 

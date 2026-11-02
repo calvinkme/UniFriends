@@ -24,7 +24,7 @@ if (!isExpoGo) {
       });
     })
     .catch(() => {
-      console.log("Notifications not available in this environment");
+      if (__DEV__) console.log("Notifications not available in this environment");
     });
 }
 
@@ -50,7 +50,6 @@ export async function registerForPushNotifications(): Promise<string | null> {
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#7c6f5b",
-      sound: "default",
     });
 
     await Notifications.setNotificationChannelAsync("messages", {
@@ -59,14 +58,12 @@ export async function registerForPushNotifications(): Promise<string | null> {
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#7c6f5b",
-      sound: "default",
     });
 
     await Notifications.setNotificationChannelAsync("connections", {
       name: "Connection Requests",
       description: "New connection request notifications",
       importance: Notifications.AndroidImportance.DEFAULT,
-      sound: "default",
     });
   }
 
@@ -76,13 +73,17 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   if (!projectId) return null;
 
-  const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
-  return tokenData.data;
+  try {
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+    return tokenData.data;
+  } catch {
+    return null;
+  }
 }
 
 export async function notifyNewMessage(
   senderName: string,
-  messageText: string,
+  _messageText: string,
   conversationId: string,
 ) {
   if (isExpoGo) return;
@@ -90,9 +91,9 @@ export async function notifyNewMessage(
   await Notifications.scheduleNotificationAsync({
     content: {
       title: senderName,
-      body: messageText,
+      body: "Sent you a message",
       data: { type: "message", conversationId },
-      sound: "default",
+      sound: true,
       ...(Platform.OS === "android" ? { channelId: "messages" } : {}),
     },
     trigger: null,
@@ -110,7 +111,7 @@ export async function notifyConnectionRequest(
       title: "New Connection Request",
       body: `${requesterName} wants to connect with you!`,
       data: { type: "connection_request", userId },
-      sound: "default",
+      sound: true,
       ...(Platform.OS === "android" ? { channelId: "connections" } : {}),
     },
     trigger: null,
@@ -125,7 +126,7 @@ export async function notifyMutualMatch(matchName: string, userId: string) {
       title: "It's a Match!",
       body: `You and ${matchName} are now connected. Say hello!`,
       data: { type: "match", userId },
-      sound: "default",
+      sound: true,
       ...(Platform.OS === "android" ? { channelId: "connections" } : {}),
     },
     trigger: null,
@@ -144,7 +145,7 @@ export async function notifyGroupActivity(
       title: groupName,
       body: activityText,
       data: { type: "group", groupId },
-      sound: "default",
+      sound: true,
     },
     trigger: null,
   });

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { UserProfile, ScoredProfile } from "@/types";
 import { MOCK_USERS, CURRENT_USER } from "@/services/mockData";
+import { USE_MOCK_DATA } from "@/constants/config";
 import { createConnection, getDiscoverableProfiles } from "@/services/database";
 import { rankProfiles, rankAllProfiles } from "@/services/matchingAlgorithm";
 import { useAuthStore } from "./authStore";
@@ -8,6 +9,7 @@ import { useConnectionStore } from "./connectionStore";
 import { useProfileStore } from "./profileStore";
 import { useFilterStore } from "./filterStore";
 import { getBlockedUsers } from "@/services/database";
+import { fuzzyMatch } from "@/services/fuzzyMatch";
 
 type DiscoveryStore = {
   // Legacy: index-based for browse.tsx swipe UI
@@ -53,9 +55,12 @@ function mapDbProfile(row: Record<string, unknown>): UserProfile {
 }
 
 function applyFilters(profiles: UserProfile[]): UserProfile[] {
-  const { fieldOfStudy, major, academicYear, interests } = useFilterStore.getState();
+  const { university, fieldOfStudy, major, academicYear, interests } = useFilterStore.getState();
 
   return profiles.filter((p) => {
+    if (university) {
+      if (p.university.toLowerCase() !== university.toLowerCase()) return false;
+    }
     if (fieldOfStudy) {
       const lower = fieldOfStudy.toLowerCase();
       const matchesDegree = p.degree.toLowerCase().includes(lower);
@@ -63,8 +68,8 @@ function applyFilters(profiles: UserProfile[]): UserProfile[] {
       if (!matchesDegree && !matchesMajor) return false;
     }
     if (major) {
-      const lowerMajor = major.toLowerCase();
-      if (!p.majors.some((m) => m.toLowerCase().includes(lowerMajor))) return false;
+      const hasMatch = p.majors.some((m) => fuzzyMatch(major, m));
+      if (!hasMatch) return false;
     }
     if (academicYear && p.academicYear !== academicYear) {
       return false;
@@ -105,13 +110,16 @@ async function fetchDiscoverableProfiles(excludeIds: string[]): Promise<UserProf
     // Fall through to mock data
   }
 
-  const excluded = new Set(allExcluded);
-  const fallbackProfiles = MOCK_USERS.filter((user) => !excluded.has(user.id));
-  const seenIds = new Set(rawProfiles.map((user) => user.id));
+  // Mock profiles are only ever mixed in during development/testing.
+  if (USE_MOCK_DATA) {
+    const excluded = new Set(allExcluded);
+    const fallbackProfiles = MOCK_USERS.filter((user) => !excluded.has(user.id));
+    const seenIds = new Set(rawProfiles.map((user) => user.id));
 
-  for (const fallbackProfile of fallbackProfiles) {
-    if (!seenIds.has(fallbackProfile.id)) {
-      rawProfiles.push(fallbackProfile);
+    for (const fallbackProfile of fallbackProfiles) {
+      if (!seenIds.has(fallbackProfile.id)) {
+        rawProfiles.push(fallbackProfile);
+      }
     }
   }
 
@@ -129,7 +137,8 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
   lastConnectedUser: null,
 
   loadProfiles: async () => {
-    const currentUser = useProfileStore.getState().currentUser ?? CURRENT_USER;
+    const currentUser = useProfileStore.getState().currentUser ?? (USE_MOCK_DATA ? CURRENT_USER : null);
+    if (!currentUser) return;
     const { skippedIds, connectedIds } = get();
     const excludeIds = Array.from(new Set([currentUser.id, ...skippedIds, ...connectedIds]));
     const rawProfiles = await fetchDiscoverableProfiles(excludeIds);
@@ -146,7 +155,8 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
   },
 
   loadMainFeed: async () => {
-    const currentUser = useProfileStore.getState().currentUser ?? CURRENT_USER;
+    const currentUser = useProfileStore.getState().currentUser ?? (USE_MOCK_DATA ? CURRENT_USER : null);
+    if (!currentUser) return;
     const { skippedIds, connectedIds } = get();
     const excludeIds = Array.from(new Set([currentUser.id, ...skippedIds, ...connectedIds]));
 
@@ -226,6 +236,7 @@ export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
 
     set({
       connectedIds: [...connectedIds, id],
+      scoredProfiles: scoredProfiles.filter((p) => p.id !== id),
       showConnectionModal: true,
       connectionModalType: result,
       lastConnectedUser: profile,

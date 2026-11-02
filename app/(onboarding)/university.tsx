@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/onboarding/ProgressBar";
 import { useOnboardingStore } from "@/stores";
-import { searchUniversities } from "@/services/universities";
+import { searchUniversities, isInSystemUniversity } from "@/services/universities";
 
 export default function UniversityScreen() {
   const insets = useSafeAreaInsets();
@@ -185,28 +185,53 @@ export default function UniversityScreen() {
             }}
           >
             <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
-              {uniSuggestions.map((item) => (
-                <Pressable
-                  key={item}
-                  onPress={() => selectUniversity(item)}
-                  className="px-4 py-3 active:bg-surface-container-high"
-                  style={{
-                    borderBottomWidth: 0.5,
-                    borderBottomColor: Colors.outline.variant + "33",
-                  }}
-                >
-                  <Text
+              {uniSuggestions.map((item) => {
+                const inSystem = isInSystemUniversity(item);
+                return (
+                  <Pressable
+                    key={item}
+                    onPress={() => selectUniversity(item)}
+                    className="px-4 py-3 flex-row items-center justify-between active:bg-surface-container-high"
                     style={{
-                      fontFamily: "WorkSans_400Regular",
-                      fontSize: 14,
-                      color: Colors.onSurface.DEFAULT,
+                      borderBottomWidth: 0.5,
+                      borderBottomColor: Colors.outline.variant + "33",
                     }}
-                    numberOfLines={1}
                   >
-                    {item}
-                  </Text>
-                </Pressable>
-              ))}
+                    <Text
+                      style={{
+                        fontFamily: "WorkSans_400Regular",
+                        fontSize: 14,
+                        color: Colors.onSurface.DEFAULT,
+                        flex: 1,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {item}
+                    </Text>
+                    {inSystem && (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 4,
+                          marginLeft: 8,
+                        }}
+                      >
+                        <Check size={13} color={Colors.primary.DEFAULT} />
+                        <Text
+                          style={{
+                            fontFamily: "WorkSans_500Medium",
+                            fontSize: 11,
+                            color: Colors.primary.DEFAULT,
+                          }}
+                        >
+                          Degrees
+                        </Text>
+                      </View>
+                    )}
+                  </Pressable>
+                );
+              })}
             </ScrollView>
           </View>
         )}

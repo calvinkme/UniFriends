@@ -105,7 +105,7 @@ Deno.serve(async (req: Request) => {
     const pushMessages = pushTokenRows.map((tokenRow) => ({
       to: tokenRow.token,
       title: senderName,
-      body: message.text.length > 100 ? message.text.slice(0, 100) + "..." : message.text,
+      body: "Sent you a message",
       data: {
         type: "message",
         conversationId: message.conversation_id,

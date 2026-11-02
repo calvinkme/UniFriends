@@ -1,13 +1,35 @@
 import { makeRedirectUri } from "expo-auth-session";
-import * as WebBrowser from "expo-web-browser";
 import { supabase } from "./supabase";
-
-WebBrowser.maybeCompleteAuthSession();
 
 const redirectUri = makeRedirectUri({
   scheme: "unifriends",
   path: "auth/callback",
 });
+
+let googleSignInConfigured = false;
+
+function getGoogleSignIn() {
+  try {
+    const {
+      GoogleSignin,
+      isSuccessResponse,
+    } = require("@react-native-google-signin/google-signin");
+
+    if (!googleSignInConfigured) {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        offlineAccess: true,
+      });
+      googleSignInConfigured = true;
+    }
+
+    return { GoogleSignin, isSuccessResponse };
+  } catch {
+    throw new Error(
+      "Google Sign-In requires a development build. Please install the latest dev client APK."
+    );
+  }
+}
 
 function friendlyAuthError(error: { message: string; status?: number }): Error {
   const msg = error.message.toLowerCase();
@@ -85,39 +107,26 @@ export function onAuthStateChange(callback: (session: unknown) => void) {
 }
 
 // OAuth providers
-async function signInWithOAuth(provider: "google" | "facebook") {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: {
-      redirectTo: redirectUri,
-      skipBrowserRedirect: true,
-    },
-  });
-  if (error) throw error;
-
-  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
-
-  if (result.type === "success") {
-    const url = new URL(result.url);
-    // Supabase returns tokens in the URL hash fragment
-    const params = new URLSearchParams(url.hash.substring(1));
-    const accessToken = params.get("access_token");
-    const refreshToken = params.get("refresh_token");
-
-    if (accessToken && refreshToken) {
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-      if (sessionError) throw sessionError;
-    }
-  }
-}
-
 export async function signInWithGoogle() {
-  return signInWithOAuth("google");
+  const { GoogleSignin, isSuccessResponse } = getGoogleSignIn();
+
+  await GoogleSignin.hasPlayServices();
+  const response = await GoogleSignin.signIn();
+
+  if (!isSuccessResponse(response)) {
+    throw new Error("Google sign-in was cancelled.");
+  }
+
+  const idToken = response.data.idToken;
+  if (!idToken) {
+    throw new Error("No ID token returned from Google.");
+  }
+
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: "google",
+    token: idToken,
+  });
+  if (error) throw friendlyAuthError(error);
+  return data;
 }
 
-export async function signInWithFacebook() {
-  return signInWithOAuth("facebook");
-}

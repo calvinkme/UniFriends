@@ -52,15 +52,17 @@ export default function BioScreen() {
       // failure doesn't block profile creation
       if (store.avatarUri) {
         try {
-          const fileExt = store.avatarUri.split(".").pop() ?? "jpg";
+          const ALLOWED_IMAGE_EXTS = ["jpg", "jpeg", "png", "webp"];
+          const rawExt = (store.avatarUri.split(".").pop() ?? "").toLowerCase();
+          const fileExt = ALLOWED_IMAGE_EXTS.includes(rawExt) ? rawExt : "jpg";
+          const mimeType = fileExt === "png" ? "image/png" : fileExt === "webp" ? "image/webp" : "image/jpeg";
           const filePath = `${session.user.id}.${fileExt}`;
 
-          // Use FormData for React Native compatibility instead of fetch-to-blob
           const formData = new FormData();
           formData.append("file", {
             uri: store.avatarUri,
             name: filePath,
-            type: `image/${fileExt}`,
+            type: mimeType,
           } as unknown as Blob);
 
           const { error: uploadError } = await supabase.storage
@@ -81,17 +83,18 @@ export default function BioScreen() {
       }
 
       // Insert profile
+      const { sanitizeText } = await import("@/services/sanitize");
       const profileData = {
         id: session.user.id,
-        first_name: store.firstName,
-        last_name: store.lastName,
-        university: store.university,
-        degree: store.degree,
-        majors: store.majors,
+        first_name: sanitizeText(store.firstName, 50),
+        last_name: sanitizeText(store.lastName, 50),
+        university: sanitizeText(store.university, 100),
+        degree: sanitizeText(store.degree, 100),
+        majors: store.majors.map((m) => sanitizeText(m, 100)),
         age: parseInt(store.age, 10),
         academic_year: store.academicYear,
-        bio: store.bio,
-        interests: store.interests,
+        bio: sanitizeText(store.bio, 300),
+        interests: store.interests.map((i) => sanitizeText(i, 50)),
         avatar_url: avatarUrl || null,
         active_courses: [],
         is_verified: false,

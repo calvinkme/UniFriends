@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { UserProfile } from "@/types";
 import { useAuthStore } from "./authStore";
 import { CURRENT_USER } from "@/services/mockData";
+import { USE_MOCK_DATA } from "@/constants/config";
 import { supabase } from "@/services/supabase";
 
 type ProfileStore = {
@@ -34,7 +35,7 @@ export const useProfileStore = create<ProfileStore>((set, get) => ({
 
   loadProfile: () => {
     const authProfile = useAuthStore.getState().profile;
-    set({ currentUser: authProfile ?? CURRENT_USER });
+    set({ currentUser: authProfile ?? (USE_MOCK_DATA ? CURRENT_USER : null) });
   },
 
   updateProfile: async (updates) => {

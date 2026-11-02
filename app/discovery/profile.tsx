@@ -159,7 +159,7 @@ export default function ProfileDetailScreen() {
           {profile.compatibilityScore > 0 && (
             <View style={{ backgroundColor: Colors.primary.fixed, borderRadius: 14, padding: 16, alignItems: "center" }}>
               <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 28, color: Colors.primary.DEFAULT }}>
-                {Math.round(profile.compatibilityScore * 100)}%
+                {Math.round(profile.compatibilityScore)}%
               </Text>
               <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 13, color: Colors.onPrimary.container, marginTop: 2 }}>
                 Compatibility Score

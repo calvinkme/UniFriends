@@ -101,7 +101,7 @@ export default function ProfileScreen() {
             className="text-on-surface-variant mt-1"
             style={{ fontFamily: "WorkSans_500Medium", fontSize: 14 }}
           >
-            B.Sc {currentUser.degree}
+            {currentUser.degree}
           </Text>
         </View>
 

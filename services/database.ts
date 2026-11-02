@@ -1,12 +1,21 @@
 import { supabase } from "./supabase";
 import type { UserProfile, DbMessage, DbConversation, Message, MessageStatus } from "@/types";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function assertUUID(id: string, label = "ID") {
+  if (!UUID_RE.test(id)) throw new Error(`Invalid ${label}`);
+}
+
+const PROFILE_COLUMNS = "id, first_name, last_name, avatar_url, university, degree, majors, age, academic_year, gpa_ranking, active_courses, bio, interests, is_verified, created_at";
+
 // ─── Profile operations ──────────────────────────────────────
 
 export async function getProfile(userId: string) {
+  assertUUID(userId, "user ID");
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select(PROFILE_COLUMNS)
     .eq("id", userId)
     .single();
   if (error) throw error;
@@ -30,7 +39,7 @@ export async function getDiscoverableProfiles(filters: {
   interests?: string[];
   excludeIds?: string[];
 }) {
-  let query = supabase.from("profiles").select("*");
+  let query = supabase.from("profiles").select(PROFILE_COLUMNS);
 
   if (filters.fieldOfStudy) {
     query = query.eq("degree", filters.fieldOfStudy);
@@ -39,7 +48,10 @@ export async function getDiscoverableProfiles(filters: {
     query = query.eq("academic_year", filters.academicYear);
   }
   if (filters.excludeIds?.length) {
-    query = query.not("id", "in", `(${filters.excludeIds.join(",")})`);
+    const validIds = filters.excludeIds.filter((id) => UUID_RE.test(id));
+    if (validIds.length) {
+      query = query.not("id", "in", `(${validIds.join(",")})`);
+    }
   }
 
   const { data, error } = await query.limit(20);
@@ -50,9 +62,10 @@ export async function getDiscoverableProfiles(filters: {
 // ─── Connection operations ───────────────────────────────────
 
 export async function getConnections(userId: string) {
+  assertUUID(userId, "user ID");
   const { data, error } = await supabase
     .from("connections")
-    .select("*, profiles!connections_user_b_id_fkey(*)")
+    .select(`*, profiles!connections_user_b_id_fkey(${PROFILE_COLUMNS})`)
     .eq("user_a_id", userId)
     .eq("status", "accepted");
   if (error) throw error;
@@ -60,6 +73,8 @@ export async function getConnections(userId: string) {
 }
 
 export async function createConnection(userAId: string, userBId: string) {
+  assertUUID(userAId, "user A ID");
+  assertUUID(userBId, "user B ID");
   const { data, error } = await supabase
     .from("connections")
     .insert({ user_a_id: userAId, user_b_id: userBId, status: "pending" })
@@ -305,7 +320,7 @@ export async function markMessagesDelivered(
     .neq("sender_id", userId)
     .is("delivered_at", null);
 
-  if (error) console.warn("markMessagesDelivered error:", error.message);
+  if (error && __DEV__) console.warn("markMessagesDelivered error:", error.message);
 }
 
 /**
@@ -323,7 +338,7 @@ export async function markMessagesRead(
     .neq("sender_id", userId)
     .eq("read", false);
 
-  if (error) console.warn("markMessagesRead error:", error.message);
+  if (error && __DEV__) console.warn("markMessagesRead error:", error.message);
 }
 
 // ─── Push token operations ───────────────────────────────────
@@ -340,12 +355,14 @@ export async function savePushToken(
       { onConflict: "user_id,token" },
     );
 
-  if (error) console.warn("savePushToken error:", error.message);
+  if (error && __DEV__) console.warn("savePushToken error:", error.message);
 }
 
 // ─── Block & Report ─────────────────────────────────────────
 
 export async function blockUser(blockerId: string, blockedId: string) {
+  assertUUID(blockerId, "blocker ID");
+  assertUUID(blockedId, "blocked ID");
   const { error } = await supabase
     .from("blocked_users")
     .upsert(
@@ -356,6 +373,8 @@ export async function blockUser(blockerId: string, blockedId: string) {
 }
 
 export async function unblockUser(blockerId: string, blockedId: string) {
+  assertUUID(blockerId, "blocker ID");
+  assertUUID(blockedId, "blocked ID");
   const { error } = await supabase
     .from("blocked_users")
     .delete()
@@ -379,19 +398,25 @@ export async function reportUser(
   reason: string,
   details?: string,
 ) {
+  assertUUID(reporterId, "reporter ID");
+  assertUUID(reportedId, "reported ID");
+  if (!reason.trim() || reason.length > 200) throw new Error("Invalid reason");
+  if (details && details.length > 1000) throw new Error("Details too long");
+
   const { error } = await supabase
     .from("reports")
     .insert({
       reporter_id: reporterId,
       reported_id: reportedId,
-      reason,
-      details: details ?? null,
+      reason: reason.trim(),
+      details: details?.trim() ?? null,
       created_at: new Date().toISOString(),
     });
   if (error) throw error;
 }
 
 export async function deleteAccount(userId: string) {
+  assertUUID(userId, "user ID");
   const { error } = await supabase.rpc("delete_user_account", { target_user_id: userId });
   if (error) throw error;
 }

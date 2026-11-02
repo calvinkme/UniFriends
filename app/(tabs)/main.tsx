@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, RefreshControl, Pressable } from "react-native";
+import { View, Text, ScrollView, RefreshControl, Pressable, ActivityIndicator } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -8,6 +8,7 @@ import { ProfileFeedCard } from "@/components/ProfileFeedCard";
 import { ConnectionModal } from "@/components/ConnectionModal";
 import { useDiscoveryStore, useProfileStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
+import { USE_MOCK_DATA } from "@/constants/config";
 export default function MainScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -25,13 +26,15 @@ export default function MainScreen() {
   } = useDiscoveryStore();
 
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadProfile();
   }, [loadProfile]);
 
   useEffect(() => {
-    loadMainFeed();
+    setIsLoading(true);
+    Promise.resolve(loadMainFeed()).finally(() => setIsLoading(false));
   }, [currentUser, loadMainFeed]);
 
   const onRefresh = useCallback(async () => {
@@ -40,7 +43,7 @@ export default function MainScreen() {
     setRefreshing(false);
   }, [loadMainFeed]);
 
-  const user = currentUser ?? CURRENT_USER;
+  const user = currentUser ?? (USE_MOCK_DATA ? CURRENT_USER : null);
 
   const currentProfile = scoredProfiles[0];
 
@@ -114,11 +117,15 @@ export default function MainScreen() {
 
           <ProfileFeedCard
             profile={currentProfile}
-            currentUserInterests={user.interests}
+            currentUserInterests={user?.interests ?? []}
             onConnect={acceptProfileById}
             onSkip={skipProfileById}
           />
         </ScrollView>
+      ) : isLoading ? (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" color={Colors.primary.DEFAULT} />
+        </View>
       ) : (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 }}>
           <Text

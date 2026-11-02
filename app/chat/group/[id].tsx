@@ -19,6 +19,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { MessageStatus } from "@/components/ui/MessageStatus";
 import { useConnectionStore, useAuthStore } from "@/stores";
 import { CURRENT_USER } from "@/services/mockData";
+import { USE_MOCK_DATA } from "@/constants/config";
 import type { Message } from "@/types";
 
 export default function GroupChatScreen() {
@@ -26,7 +27,7 @@ export default function GroupChatScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { groups, conversations, sendMessage, deleteMessage } = useConnectionStore();
   const session = useAuthStore((s) => s.session);
-  const currentUserId = session?.user?.id ?? CURRENT_USER.id;
+  const currentUserId = session?.user?.id ?? (USE_MOCK_DATA ? CURRENT_USER.id : "");
 
   const [inputText, setInputText] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -107,8 +108,8 @@ export default function GroupChatScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: Colors.background }}
-      behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
     >
       <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Header */}

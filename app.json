@@ -17,6 +17,7 @@
       "bundleIdentifier": "com.unifriends.app"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#fcf9f4",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -26,9 +27,7 @@
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "resize",
       "package": "com.unifriends.app",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -51,7 +50,8 @@
           "icon": "./assets/icon.png",
           "color": "#7c6f5b"
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "extra": {
       "router": {},

@@ -68,6 +68,18 @@ export default function RootLayout() {
   useEffect(() => {
     if (!authInitialized) return;
 
+    function isValidJWT(token: string): boolean {
+      const parts = token.split(".");
+      if (parts.length !== 3) return false;
+      try {
+        const payload = JSON.parse(atob(parts[1]));
+        if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
     function handleDeepLink(url: string | null) {
       if (!url || url === processedUrl.current) return;
 
@@ -78,7 +90,7 @@ export default function RootLayout() {
       const accessToken = params.get("access_token");
       const refreshToken = params.get("refresh_token");
 
-      if (accessToken && refreshToken) {
+      if (accessToken && refreshToken && isValidJWT(accessToken)) {
         processedUrl.current = url;
         supabase.auth.setSession({
           access_token: accessToken,
@@ -106,35 +118,52 @@ export default function RootLayout() {
   useEffect(() => {
     if (!authInitialized || !session) return;
 
-    registerForPushNotifications().then((token) => {
-      if (token) {
-        setPushToken(token);
-        // Save token to Supabase for cross-device push notifications
-        const platform = Platform.OS === "ios" ? "ios" : Platform.OS === "android" ? "android" : "web";
-        savePushToken(session.user.id, token, platform);
-      }
-    });
+    registerForPushNotifications()
+      .then((token) => {
+        if (token) {
+          setPushToken(token);
+          const platform = Platform.OS === "ios" ? "ios" : Platform.OS === "android" ? "android" : "web";
+          savePushToken(session.user.id, token, platform);
+        }
+      })
+      .catch(() => {});
 
     addNotificationReceivedListener(
       (_notification: Notification) => {},
-    ).then((sub) => {
-      notificationListener.current = sub as EventSubscription;
-    });
+    )
+      .then((sub) => {
+        notificationListener.current = sub as EventSubscription;
+      })
+      .catch(() => {});
 
     addNotificationResponseReceivedListener(
       (response: NotificationResponse) => {
         const data = response.notification.request.content.data;
 
         if (data?.type === "message" && data.conversationId) {
-          const userId = (data.conversationId as string).replace("convo-", "");
-          router.push(`/chat/${userId}`);
+          // The payload carries a conversation id, but /chat/[id] is keyed by
+          // the other participant's user id — resolve it via the store.
+          const convoId = String(data.conversationId);
+          const convo = useConnectionStore
+            .getState()
+            .conversations.find((c) => c.id === convoId);
+          const otherUserId = convo?.participantIds.find(
+            (pid) => pid !== session?.user?.id,
+          );
+          if (otherUserId) {
+            router.push(`/chat/${otherUserId}`);
+          } else {
+            router.push("/(tabs)/connections");
+          }
         } else if (data?.type === "connection_request" || data?.type === "match") {
           router.push("/(tabs)/connections");
         }
       },
-    ).then((sub) => {
-      responseListener.current = sub as EventSubscription;
-    });
+    )
+      .then((sub) => {
+        responseListener.current = sub as EventSubscription;
+      })
+      .catch(() => {});
 
     return () => {
       notificationListener.current?.remove();

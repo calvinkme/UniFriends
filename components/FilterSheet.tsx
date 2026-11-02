@@ -1,11 +1,14 @@
 import { View, Text, Pressable, Modal, ScrollView, TextInput } from "react-native";
 import { X, ChevronDown } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Colors } from "@/constants";
+import { UNIVERSITIES_DATA } from "@/constants/degrees";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { useFilterStore } from "@/stores";
 import { AVAILABLE_INTERESTS, AVAILABLE_DEGREES } from "@/services/mockData";
+
+const UNIVERSITY_NAMES = Object.keys(UNIVERSITIES_DATA);
 
 type FilterSheetProps = {
   visible: boolean;
@@ -15,10 +18,12 @@ type FilterSheetProps = {
 
 export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
   const {
+    university,
     fieldOfStudy,
     major,
     academicYear,
     interests,
+    setUniversity,
     setFieldOfStudy,
     setMajor,
     setAcademicYear,
@@ -26,8 +31,30 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
     resetFilters,
   } = useFilterStore();
 
+  const [showUniDropdown, setShowUniDropdown] = useState(false);
   const [showDegreeDropdown, setShowDegreeDropdown] = useState(false);
   const yearLabels = ["Freshman", "Sophomore", "Junior", "Senior"];
+
+  const degreeOptions = useMemo(() => {
+    if (university) {
+      const uniData = UNIVERSITIES_DATA[university];
+      return uniData ? uniData.map((d) => d.degree) : [];
+    }
+    return AVAILABLE_DEGREES;
+  }, [university]);
+
+  const majorOptions = useMemo(() => {
+    if (university && fieldOfStudy) {
+      const uniData = UNIVERSITIES_DATA[university];
+      if (uniData) {
+        const degreeEntry = uniData.find(
+          (d) => d.degree.toLowerCase() === fieldOfStudy.toLowerCase(),
+        );
+        return degreeEntry?.majors ?? null;
+      }
+    }
+    return null;
+  }, [university, fieldOfStudy]);
 
   const handleApply = () => {
     onApply();
@@ -110,6 +137,99 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
             contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 32 }}
             showsVerticalScrollIndicator={false}
           >
+            {/* University */}
+            <View style={{ marginBottom: 28 }}>
+              <Text
+                style={{
+                  fontFamily: "Manrope_700Bold",
+                  fontSize: 16,
+                  color: Colors.onSurface.DEFAULT,
+                  marginBottom: 12,
+                }}
+              >
+                University
+              </Text>
+              <Pressable
+                onPress={() => { setShowUniDropdown(!showUniDropdown); setShowDegreeDropdown(false); }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  backgroundColor: Colors.surface.containerHigh,
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "WorkSans_400Regular",
+                    fontSize: 15,
+                    color: university ? Colors.onSurface.DEFAULT : Colors.onSurface.variant,
+                    flex: 1,
+                  }}
+                  numberOfLines={1}
+                >
+                  {university ?? "All Universities"}
+                </Text>
+                {university ? (
+                  <Pressable
+                    onPress={(e) => { e.stopPropagation(); setUniversity(null); setShowUniDropdown(false); }}
+                    hitSlop={8}
+                  >
+                    <X size={16} color={Colors.onSurface.variant} />
+                  </Pressable>
+                ) : (
+                  <ChevronDown size={18} color={Colors.onSurface.variant} />
+                )}
+              </Pressable>
+              {showUniDropdown && (
+                <ScrollView
+                  style={{
+                    maxHeight: 200,
+                    backgroundColor: Colors.surface.containerHigh,
+                    borderRadius: 12,
+                    marginTop: 8,
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled
+                >
+                  <Pressable
+                    onPress={() => { setUniversity(null); setShowUniDropdown(false); }}
+                    style={{ paddingHorizontal: 16, paddingVertical: 12 }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "WorkSans_400Regular",
+                        fontSize: 14,
+                        color: !university ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
+                      }}
+                    >
+                      All Universities
+                    </Text>
+                  </Pressable>
+                  {UNIVERSITY_NAMES.map((uni) => (
+                    <Pressable
+                      key={uni}
+                      onPress={() => { setUniversity(uni); setShowUniDropdown(false); }}
+                      style={{ paddingHorizontal: 16, paddingVertical: 12 }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "WorkSans_400Regular",
+                          fontSize: 14,
+                          color: university === uni ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
+                        }}
+                        numberOfLines={1}
+                      >
+                        {uni}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+
             {/* Degree Program */}
             <View style={{ marginBottom: 28 }}>
               <Text
@@ -123,7 +243,7 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                 Degree Program
               </Text>
               <Pressable
-                onPress={() => setShowDegreeDropdown(!showDegreeDropdown)}
+                onPress={() => { setShowDegreeDropdown(!showDegreeDropdown); setShowUniDropdown(false); }}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -139,26 +259,27 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                     fontFamily: "WorkSans_400Regular",
                     fontSize: 15,
                     color: fieldOfStudy ? Colors.onSurface.DEFAULT : Colors.onSurface.variant,
+                    flex: 1,
                   }}
+                  numberOfLines={1}
                 >
                   {fieldOfStudy ?? "All Fields"}
                 </Text>
                 <ChevronDown size={18} color={Colors.onSurface.variant} />
               </Pressable>
               {showDegreeDropdown && (
-                <View
+                <ScrollView
                   style={{
+                    maxHeight: 200,
                     backgroundColor: Colors.surface.containerHigh,
                     borderRadius: 12,
                     marginTop: 8,
-                    overflow: "hidden",
                   }}
+                  showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled
                 >
                   <Pressable
-                    onPress={() => {
-                      setFieldOfStudy(null);
-                      setShowDegreeDropdown(false);
-                    }}
+                    onPress={() => { setFieldOfStudy(null); setShowDegreeDropdown(false); }}
                     style={{ paddingHorizontal: 16, paddingVertical: 12 }}
                   >
                     <Text
@@ -171,13 +292,10 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                       All Fields
                     </Text>
                   </Pressable>
-                  {AVAILABLE_DEGREES.map((degree) => (
+                  {degreeOptions.map((degree) => (
                     <Pressable
                       key={degree}
-                      onPress={() => {
-                        setFieldOfStudy(degree);
-                        setShowDegreeDropdown(false);
-                      }}
+                      onPress={() => { setFieldOfStudy(degree); setShowDegreeDropdown(false); }}
                       style={{ paddingHorizontal: 16, paddingVertical: 12 }}
                     >
                       <Text
@@ -186,12 +304,13 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
                           fontSize: 14,
                           color: fieldOfStudy === degree ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
                         }}
+                        numberOfLines={1}
                       >
                         {degree}
                       </Text>
                     </Pressable>
                   ))}
-                </View>
+                </ScrollView>
               )}
             </View>
 
@@ -207,21 +326,35 @@ export function FilterSheet({ visible, onClose, onApply }: FilterSheetProps) {
               >
                 Major
               </Text>
-              <TextInput
-                value={major ?? ""}
-                onChangeText={(text) => setMajor(text || null)}
-                placeholder="e.g. Artificial Intelligence"
-                placeholderTextColor={Colors.outline.DEFAULT}
-                style={{
-                  backgroundColor: Colors.surface.containerHigh,
-                  borderRadius: 12,
-                  paddingHorizontal: 16,
-                  paddingVertical: 14,
-                  fontFamily: "WorkSans_400Regular",
-                  fontSize: 15,
-                  color: Colors.onSurface.DEFAULT,
-                }}
-              />
+              {majorOptions && majorOptions.length > 0 ? (
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+                  {majorOptions.map((m) => (
+                    <Chip
+                      key={m}
+                      label={m}
+                      selected={major === m}
+                      onPress={() => setMajor(major === m ? null : m)}
+                      onRemove={() => setMajor(null)}
+                    />
+                  ))}
+                </View>
+              ) : (
+                <TextInput
+                  value={major ?? ""}
+                  onChangeText={(text) => setMajor(text || null)}
+                  placeholder="e.g. Artificial Intelligence"
+                  placeholderTextColor={Colors.outline.DEFAULT}
+                  style={{
+                    backgroundColor: Colors.surface.containerHigh,
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    fontFamily: "WorkSans_400Regular",
+                    fontSize: 15,
+                    color: Colors.onSurface.DEFAULT,
+                  }}
+                />
+              )}
             </View>
 
             {/* Academic Year */}

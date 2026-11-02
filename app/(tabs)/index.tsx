@@ -1,9 +1,10 @@
 import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { ChevronDown, Sparkles, ArrowRight } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { ChevronDown, Sparkles, ArrowRight, X } from "lucide-react-native";
+import { useEffect, useMemo, useState } from "react";
 import { Colors } from "@/constants";
+import { UNIVERSITIES_DATA } from "@/constants/degrees";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
@@ -11,20 +12,44 @@ import { useFilterStore } from "@/stores";
 import { useProfileStore } from "@/stores";
 import { AVAILABLE_INTERESTS, AVAILABLE_DEGREES } from "@/services/mockData";
 
+const UNIVERSITY_NAMES = Object.keys(UNIVERSITIES_DATA);
+
 export default function DiscoveryScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentUser, loadProfile } = useProfileStore();
   const {
-    fieldOfStudy, major, academicYear, interests,
-    setFieldOfStudy, setMajor, setAcademicYear, toggleInterest,
+    university, fieldOfStudy, major, academicYear, interests,
+    setUniversity, setFieldOfStudy, setMajor, setAcademicYear, toggleInterest,
   } = useFilterStore();
 
+  const [showUniDropdown, setShowUniDropdown] = useState(false);
   const [showDegreeDropdown, setShowDegreeDropdown] = useState(false);
 
   useEffect(() => {
     loadProfile();
   }, []);
+
+  const degreeOptions = useMemo(() => {
+    if (university) {
+      const uniData = UNIVERSITIES_DATA[university];
+      return uniData ? uniData.map((d) => d.degree) : [];
+    }
+    return AVAILABLE_DEGREES;
+  }, [university]);
+
+  const majorOptions = useMemo(() => {
+    if (university && fieldOfStudy) {
+      const uniData = UNIVERSITIES_DATA[university];
+      if (uniData) {
+        const degreeEntry = uniData.find(
+          (d) => d.degree.toLowerCase() === fieldOfStudy.toLowerCase(),
+        );
+        return degreeEntry?.majors ?? null;
+      }
+    }
+    return null;
+  }, [university, fieldOfStudy]);
 
   const yearLabels = ["Freshman", "Sophomore", "Junior", "Senior"];
 
@@ -68,48 +93,170 @@ export default function DiscoveryScreen() {
           </Text>
         </View>
 
-        {/* Degree Program */}
-        <View className="mb-12">
+        {/* University */}
+        <View className="mb-10">
           <View className="flex-row items-center justify-between mb-4">
             <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT }}>
-              Degree Program
+              University
             </Text>
             <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.tertiary.DEFAULT }}>
-              Select Degree
+              Optional
             </Text>
           </View>
           <Pressable
-            onPress={() => setShowDegreeDropdown(!showDegreeDropdown)}
-            className="flex-row items-center justify-between bg-surface-container-high rounded-xl px-4 py-4"
+            onPress={() => { setShowUniDropdown(!showUniDropdown); setShowDegreeDropdown(false); }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: Colors.surface.containerHigh,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+            }}
           >
-            <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 16, color: Colors.onSurface.DEFAULT }}>
-              {fieldOfStudy ?? "Computer Science & AI"}
+            <Text
+              style={{
+                fontFamily: "WorkSans_400Regular",
+                fontSize: 16,
+                color: university ? Colors.onSurface.DEFAULT : Colors.outline.DEFAULT,
+                flex: 1,
+              }}
+              numberOfLines={1}
+            >
+              {university ?? "All Universities"}
             </Text>
-            <ChevronDown size={20} color={Colors.onSurface.variant} />
+            {university ? (
+              <Pressable
+                onPress={(e) => { e.stopPropagation(); setUniversity(null); setShowUniDropdown(false); }}
+                hitSlop={8}
+              >
+                <X size={18} color={Colors.onSurface.variant} />
+              </Pressable>
+            ) : (
+              <ChevronDown size={20} color={Colors.onSurface.variant} />
+            )}
           </Pressable>
-          {showDegreeDropdown && (
-            <View className="bg-surface-container-high rounded-xl mt-2 overflow-hidden">
-              {AVAILABLE_DEGREES.map((degree) => (
+          {showUniDropdown && (
+            <ScrollView
+              style={{
+                maxHeight: 240,
+                backgroundColor: Colors.surface.containerHigh,
+                borderRadius: 12,
+                marginTop: 8,
+              }}
+              showsVerticalScrollIndicator={false}
+            >
+              {UNIVERSITY_NAMES.map((uni) => (
                 <Pressable
-                  key={degree}
+                  key={uni}
                   onPress={() => {
-                    setFieldOfStudy(degree);
-                    setShowDegreeDropdown(false);
+                    setUniversity(uni);
+                    setShowUniDropdown(false);
                   }}
-                  className="px-4 py-3 active:bg-surface-container-highest"
+                  style={{
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                  }}
                 >
                   <Text
                     style={{
                       fontFamily: "WorkSans_400Regular",
                       fontSize: 15,
-                      color: fieldOfStudy === degree ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
+                      color: university === uni ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
                     }}
+                    numberOfLines={1}
                   >
-                    {degree}
+                    {uni}
                   </Text>
                 </Pressable>
               ))}
-            </View>
+            </ScrollView>
+          )}
+        </View>
+
+        {/* Degree Program */}
+        <View className="mb-10">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT }}>
+              Degree Program
+            </Text>
+            {fieldOfStudy && (
+              <Pressable onPress={() => setFieldOfStudy(null)} hitSlop={8}>
+                <Text style={{ fontFamily: "WorkSans_500Medium", fontSize: 14, color: Colors.tertiary.DEFAULT }}>
+                  Clear
+                </Text>
+              </Pressable>
+            )}
+          </View>
+          <Pressable
+            onPress={() => { setShowDegreeDropdown(!showDegreeDropdown); setShowUniDropdown(false); }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: Colors.surface.containerHigh,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "WorkSans_400Regular",
+                fontSize: 16,
+                color: fieldOfStudy ? Colors.onSurface.DEFAULT : Colors.outline.DEFAULT,
+                flex: 1,
+              }}
+              numberOfLines={1}
+            >
+              {fieldOfStudy ?? "Select a degree"}
+            </Text>
+            <ChevronDown size={20} color={Colors.onSurface.variant} />
+          </Pressable>
+          {showDegreeDropdown && (
+            <ScrollView
+              style={{
+                maxHeight: 240,
+                backgroundColor: Colors.surface.containerHigh,
+                borderRadius: 12,
+                marginTop: 8,
+              }}
+              showsVerticalScrollIndicator={false}
+            >
+              {degreeOptions.length > 0 ? (
+                degreeOptions.map((degree) => (
+                  <Pressable
+                    key={degree}
+                    onPress={() => {
+                      setFieldOfStudy(degree);
+                      setShowDegreeDropdown(false);
+                    }}
+                    style={{
+                      paddingHorizontal: 16,
+                      paddingVertical: 12,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "WorkSans_400Regular",
+                        fontSize: 15,
+                        color: fieldOfStudy === degree ? Colors.primary.DEFAULT : Colors.onSurface.DEFAULT,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {degree}
+                    </Text>
+                  </Pressable>
+                ))
+              ) : (
+                <View style={{ padding: 16 }}>
+                  <Text style={{ fontFamily: "WorkSans_400Regular", fontSize: 14, color: Colors.onSurface.variant }}>
+                    No degrees found for this university
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
           )}
         </View>
 
@@ -118,21 +265,47 @@ export default function DiscoveryScreen() {
           <Text style={{ fontFamily: "Manrope_700Bold", fontSize: 20, color: Colors.onSurface.DEFAULT, marginBottom: 12 }}>
             Major
           </Text>
-          <TextInput
-            value={major ?? ""}
-            onChangeText={(text) => setMajor(text || null)}
-            placeholder="e.g. Artificial Intelligence"
-            placeholderTextColor={Colors.outline.DEFAULT}
-            style={{
-              backgroundColor: Colors.surface.containerHigh,
-              borderRadius: 12,
-              paddingHorizontal: 16,
-              paddingVertical: 14,
-              fontFamily: "WorkSans_400Regular",
-              fontSize: 16,
-              color: Colors.onSurface.DEFAULT,
-            }}
-          />
+          {majorOptions && majorOptions.length > 0 ? (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {majorOptions.map((m) => (
+                <Chip
+                  key={m}
+                  label={m}
+                  selected={major === m}
+                  onPress={() => setMajor(major === m ? null : m)}
+                  onRemove={() => setMajor(null)}
+                />
+              ))}
+            </View>
+          ) : (
+            <TextInput
+              value={major ?? ""}
+              onChangeText={(text) => setMajor(text || null)}
+              placeholder="e.g. Artificial Intelligence"
+              placeholderTextColor={Colors.outline.DEFAULT}
+              style={{
+                backgroundColor: Colors.surface.containerHigh,
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 14,
+                fontFamily: "WorkSans_400Regular",
+                fontSize: 16,
+                color: Colors.onSurface.DEFAULT,
+              }}
+            />
+          )}
+          {!majorOptions && major && (
+            <Text
+              style={{
+                fontFamily: "WorkSans_300Light",
+                fontSize: 12,
+                color: Colors.onSurface.variant,
+                marginTop: 6,
+              }}
+            >
+              Typo-tolerant — close matches will still be found
+            </Text>
+          )}
         </View>
 
         {/* Academic Year */}

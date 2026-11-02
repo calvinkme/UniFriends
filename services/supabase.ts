@@ -14,9 +14,17 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
-// TODO: Replace with your actual Supabase project URL and anon key
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "https://your-project.supabase.co";
-const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "your-anon-key";
+const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  // Fail loudly instead of silently pointing at a non-existent project.
+  // Ensure EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_ANON_KEY are set
+  // in .env (local) and as EAS build secrets (CI/production builds).
+  throw new Error(
+    "Missing Supabase environment variables. Set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.",
+  );
+}
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
